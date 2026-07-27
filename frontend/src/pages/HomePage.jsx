@@ -12,7 +12,8 @@ import {
   LogIn,
   LogOut,
   X,
-  Play
+  Play,
+  MapPin
 } from "lucide-react";
 
 const trendingDestinations = [

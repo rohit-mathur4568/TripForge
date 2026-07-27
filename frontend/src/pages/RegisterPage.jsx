@@ -139,12 +139,12 @@ function RegisterPage() {
   }
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden px-5 py-10 text-[#17211a]">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden px-5 py-4 text-[#17211a]">
       <div className="pointer-events-none absolute left-[-100px] top-10 h-80 w-80 rounded-full bg-[#d9f99d]/60 blur-3xl" />
       <div className="pointer-events-none absolute bottom-0 right-[-100px] h-80 w-80 rounded-full bg-[#fef08a]/55 blur-3xl" />
 
       <section className="relative grid w-full max-w-5xl overflow-hidden rounded-[36px] border border-white bg-white/90 shadow-[0_30px_90px_rgba(40,65,45,0.15)] backdrop-blur-xl lg:grid-cols-[0.9fr_1.1fr]">
-        <div className="relative overflow-hidden p-8 text-white md:p-11 flex flex-col justify-between min-h-[400px]">
+        <div className="relative overflow-hidden p-6 text-white md:p-8 flex flex-col justify-between min-h-[400px]">
           <div 
              className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
              style={{ backgroundImage: `url(${bgImage})` }} 
@@ -176,8 +176,8 @@ function RegisterPage() {
           </div>
         </div>
 
-        <div className="p-8 md:p-11">
-          <p className="text-sm font-black uppercase tracking-[0.18em] text-[#5d7a65]">
+        <div className="p-6 md:p-8">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#5d7a65]">
             Create account
           </p>
 
@@ -196,7 +196,7 @@ function RegisterPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+          <form onSubmit={handleSubmit} className="mt-5 space-y-4">
             <label className="block">
               <span className="mb-2 block text-sm font-extrabold">
                 Full name
@@ -213,7 +213,7 @@ function RegisterPage() {
                   required
                   minLength={2}
                   autoComplete="name"
-                  className="w-full rounded-2xl border border-[#dce6d5] bg-[#fbfdf9] py-4 pl-12 pr-4 outline-none transition focus:border-[#679173] focus:ring-4 focus:ring-[#dff0d9]"
+                  className="w-full rounded-2xl border border-[#dce6d5] bg-[#fbfdf9] py-3 pl-12 pr-4 outline-none transition focus:border-[#679173] focus:ring-4 focus:ring-[#dff0d9]"
                   placeholder="Enter your full name"
                 />
               </div>
@@ -234,7 +234,7 @@ function RegisterPage() {
                   onChange={handleInputChange}
                   required
                   autoComplete="email"
-                  className="w-full rounded-2xl border border-[#dce6d5] bg-[#fbfdf9] py-4 pl-12 pr-4 outline-none transition focus:border-[#679173] focus:ring-4 focus:ring-[#dff0d9]"
+                  className="w-full rounded-2xl border border-[#dce6d5] bg-[#fbfdf9] py-3 pl-12 pr-4 outline-none transition focus:border-[#679173] focus:ring-4 focus:ring-[#dff0d9]"
                   placeholder="Enter your email"
                 />
               </div>
@@ -257,7 +257,7 @@ function RegisterPage() {
                   minLength={8}
                   maxLength={72}
                   autoComplete="new-password"
-                  className="w-full rounded-2xl border border-[#dce6d5] bg-[#fbfdf9] py-4 pl-12 pr-12 outline-none transition focus:border-[#679173] focus:ring-4 focus:ring-[#dff0d9]"
+                  className="w-full rounded-2xl border border-[#dce6d5] bg-[#fbfdf9] py-3 pl-12 pr-12 outline-none transition focus:border-[#679173] focus:ring-4 focus:ring-[#dff0d9]"
                   placeholder="Create a password"
                 />
 
@@ -295,7 +295,7 @@ function RegisterPage() {
                   minLength={8}
                   maxLength={72}
                   autoComplete="new-password"
-                  className="w-full rounded-2xl border border-[#dce6d5] bg-[#fbfdf9] py-4 pl-12 pr-12 outline-none transition focus:border-[#679173] focus:ring-4 focus:ring-[#dff0d9]"
+                  className="w-full rounded-2xl border border-[#dce6d5] bg-[#fbfdf9] py-3 pl-12 pr-12 outline-none transition focus:border-[#679173] focus:ring-4 focus:ring-[#dff0d9]"
                   placeholder="Confirm your password"
                 />
 
@@ -323,7 +323,7 @@ function RegisterPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="group flex w-full items-center justify-center gap-3 rounded-full bg-[#173d2e] px-7 py-4 font-extrabold text-white shadow-lg shadow-green-950/15 transition hover:bg-[#20533f] disabled:cursor-not-allowed disabled:opacity-70"
+              className="group flex w-full items-center justify-center gap-3 rounded-full bg-[#173d2e] px-7 py-3 font-extrabold text-white shadow-lg shadow-green-950/15 transition hover:bg-[#20533f] disabled:cursor-not-allowed disabled:opacity-70"
             >
               {isSubmitting ? (
                 <>
@@ -339,8 +339,8 @@ function RegisterPage() {
             </button>
           </form>
 
-          <div className="mt-7 border-t border-[#e4ebe0] pt-6 text-center">
-            <p className="text-sm text-[#6b776e]">
+          <div className="mt-5 border-t border-[#e4ebe0] pt-4 text-center">
+            <p className="text-xs text-[#6b776e]">
               Already have an account?
             </p>
 
