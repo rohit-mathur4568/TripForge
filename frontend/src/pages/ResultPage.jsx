@@ -18,9 +18,13 @@ import {
   Utensils,
   Users,
   X,
+  Map as MapIcon,
+  CloudSun,
 } from "lucide-react";
 
 import { saveTrip } from "../services/tripService";
+import TripMap from "../components/TripMap";
+import CalendarExport from "../components/CalendarExport";
 
 function ResultPage() {
   const location = useLocation();
@@ -35,6 +39,7 @@ function ResultPage() {
   }
 
   const {
+    journeyOverview,
     summary,
     budgetBreakdown,
     itinerary,
@@ -42,6 +47,8 @@ function ResultPage() {
     travelTips,
     additionalNotes,
   } = generatedTrip;
+
+  const heroImage = journeyOverview?.heroImage || "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1600&q=80";
 
   async function handleSaveJourney() {
     if (isSaving || isSaved) {
@@ -85,7 +92,7 @@ function ResultPage() {
   }
 
   return (
-    <main className="min-h-screen px-5 py-7 text-[#17211a] md:px-8 md:py-10">
+    <main className="min-h-screen px-5 py-7 text-[#17211a] md:px-8 md:py-10 bg-[#fbfdf9]">
       {notification && (
         <NotificationToast
           notification={notification}
@@ -103,45 +110,57 @@ function ResultPage() {
             Plan another journey
           </Link>
 
-          <button
-            type="button"
-            onClick={handleSaveJourney}
-            disabled={isSaving || isSaved}
-            className={`inline-flex items-center gap-2 rounded-full border px-5 py-3 text-sm font-extrabold shadow-sm transition ${
-              isSaved
-                ? "cursor-default border-[#b9d4ae] bg-[#edf8d9] text-[#173d2e]"
-                : "border-[#dce6d5] bg-white text-[#34443a] hover:border-[#b8ccac]"
-            } disabled:opacity-80`}
-          >
-            {isSaving ? (
-              <>
-                <LoaderCircle className="h-4 w-4 animate-spin" />
-                Saving journey...
-              </>
-            ) : isSaved ? (
-              <>
-                <CheckCircle2 className="h-4 w-4" />
-                Journey saved
-              </>
-            ) : (
-              <>
-                <Save className="h-4 w-4" />
-                Save journey
-              </>
-            )}
-          </button>
+          <div className="flex items-center gap-3">
+            <CalendarExport summary={summary} itinerary={itinerary} />
+
+            <button
+              type="button"
+              onClick={handleSaveJourney}
+              disabled={isSaving || isSaved}
+              className={`inline-flex items-center gap-2 rounded-full border px-5 py-3 text-sm font-extrabold shadow-sm transition ${
+                isSaved
+                  ? "cursor-default border-[#b9d4ae] bg-[#edf8d9] text-[#173d2e]"
+                  : "border-[#dce6d5] bg-white text-[#34443a] hover:border-[#b8ccac]"
+              } disabled:opacity-80 cursor-pointer`}
+            >
+              {isSaving ? (
+                <>
+                  <LoaderCircle className="h-4 w-4 animate-spin" />
+                  Saving journey...
+                </>
+              ) : isSaved ? (
+                <>
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                  Journey saved
+                </>
+              ) : (
+                <>
+                  <Save className="h-4 w-4" />
+                  Save journey
+                </>
+              )}
+            </button>
+          </div>
         </div>
 
+        {/* Hero Section with High-Res Destination Image */}
         <section className="relative mt-7 overflow-hidden rounded-[36px] bg-[#173d2e] px-7 py-9 text-white shadow-[0_30px_80px_rgba(40,65,45,0.16)] md:px-10 md:py-11">
-          <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#eaff9d]/10 blur-3xl" />
-          <div className="absolute -bottom-24 left-20 h-56 w-56 rounded-full bg-[#f8df58]/10 blur-3xl" />
+          <div
+            className="absolute inset-0 opacity-30 bg-cover bg-center pointer-events-none"
+            style={{ backgroundImage: `url(${heroImage})` }}
+          />
 
-          <div className="relative">
+          <div className="relative z-10">
             <div className="flex flex-col justify-between gap-7 lg:flex-row lg:items-end">
               <div>
-                <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-bold text-[#e4ece6]">
+                <div className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-md px-4 py-2 text-sm font-bold text-[#e4ece6] border border-white/20">
                   <CheckCircle2 className="h-4 w-4 text-[#eaff9d]" />
-                  Your journey is ready
+                  Verified Multi-Agent Journey
+                  {journeyOverview?.weather && (
+                    <span className="ml-2 flex items-center gap-1 text-cyan-300">
+                      <CloudSun className="w-3.5 h-3.5" /> {journeyOverview.weather}
+                    </span>
+                  )}
                 </div>
 
                 <h1 className="mt-5 text-4xl font-black tracking-tight md:text-6xl">
@@ -151,12 +170,12 @@ function ResultPage() {
                 </h1>
 
                 <p className="mt-5 max-w-2xl text-lg leading-8 text-[#d4e0d7]">
-                  A complete journey prepared around your selected dates,
-                  travellers, budget and preferences.
+                  {journeyOverview?.overview ||
+                    "A complete journey prepared around your selected dates, travellers, budget and preferences."}
                 </p>
               </div>
 
-              <div className="rounded-[26px] bg-[#eaff9d] px-6 py-5 text-[#173d2e]">
+              <div className="rounded-[26px] bg-[#eaff9d] px-6 py-5 text-[#173d2e] shadow-xl">
                 <p className="text-xs font-black uppercase tracking-[0.18em]">
                   Estimated budget
                 </p>
@@ -197,6 +216,24 @@ function ResultPage() {
           </div>
         </section>
 
+        {/* Interactive Map Visualizer */}
+        <section className="mt-7 rounded-[32px] border border-[#e1eadb] bg-white p-6 shadow-[0_22px_60px_rgba(40,65,45,0.08)] md:p-8">
+          <SectionHeader
+            icon={MapIcon}
+            eyebrow="Interactive Route Map"
+            title={`Journey Map: ${summary.destination}`}
+            description="Explore your day-by-day itinerary waypoints and route."
+          />
+          <div className="mt-6">
+            <TripMap
+              itinerary={itinerary}
+              centerLat={journeyOverview?.latitude}
+              centerLng={journeyOverview?.longitude}
+              destinationName={summary.destination}
+            />
+          </div>
+        </section>
+
         <div className="mt-7 grid items-start gap-7 lg:grid-cols-[1.35fr_0.65fr]">
           <div className="space-y-7">
             <section className="rounded-[32px] border border-[#e1eadb] bg-white p-6 shadow-[0_22px_60px_rgba(40,65,45,0.08)] md:p-8">
@@ -211,17 +248,24 @@ function ResultPage() {
                 {itinerary.map((day) => (
                   <article
                     key={day.day}
-                    className="relative rounded-[26px] border border-[#e2eadc] bg-[#fbfdf9] p-6"
+                    className="relative rounded-[26px] border border-[#e2eadc] bg-[#fbfdf9] p-6 shadow-sm"
                   >
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#173d2e] text-lg font-black text-white">
+                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#173d2e] text-lg font-black text-white shadow-md">
                         {day.day}
                       </div>
 
-                      <div>
-                        <p className="text-xs font-black uppercase tracking-[0.18em] text-[#708078]">
-                          Day {day.day}
-                        </p>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#708078]">
+                            Day {day.day}
+                          </p>
+                          {day.locationName && (
+                            <span className="text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">
+                              📍 {day.locationName}
+                            </span>
+                          )}
+                        </div>
 
                         <h3 className="mt-2 text-xl font-black">
                           {day.title}
@@ -311,7 +355,7 @@ function ResultPage() {
                   value={budgetBreakdown.reserve}
                 />
 
-                <div className="mt-5 flex items-center justify-between rounded-2xl bg-[#173d2e] px-5 py-4 text-white">
+                <div className="mt-5 flex items-center justify-between rounded-2xl bg-[#173d2e] px-5 py-4 text-white shadow-md">
                   <span className="font-black">Total budget</span>
 
                   <span className="text-xl font-black">
@@ -419,7 +463,7 @@ function NotificationToast({ notification, onClose }) {
 
 function SummaryCard({ icon: Icon, label, value }) {
   return (
-    <article className="rounded-2xl border border-white/10 bg-white/10 p-5">
+    <article className="rounded-2xl border border-white/10 bg-white/10 p-5 backdrop-blur-sm">
       <Icon className="h-5 w-5 text-[#eaff9d]" />
 
       <p className="mt-4 text-xs font-bold text-[#c8d7cc]">
@@ -460,7 +504,7 @@ function SectionHeader({
 
 function RecommendationCard({ icon: Icon, title, items }) {
   return (
-    <article className="rounded-[26px] border border-[#e2eadc] bg-[#fbfdf9] p-5">
+    <article className="rounded-[26px] border border-[#e2eadc] bg-[#fbfdf9] p-5 shadow-sm">
       <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#173d2e] text-[#eaff9d]">
         <Icon className="h-5 w-5" />
       </div>

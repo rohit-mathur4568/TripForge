@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import {
   ArrowLeft,
   CalendarDays,
@@ -9,6 +9,7 @@ import {
   MapPin,
   Trash2,
   Users,
+  Eye,
 } from "lucide-react";
 
 import {
@@ -17,6 +18,7 @@ import {
 } from "../services/tripService";
 
 function HistoryPage() {
+  const navigate = useNavigate();
   const [trips, setTrips] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
@@ -69,8 +71,14 @@ function HistoryPage() {
     }
   }
 
+  function handleViewTrip(trip) {
+    navigate("/result", {
+      state: { generatedTrip: trip },
+    });
+  }
+
   return (
-    <main className="min-h-screen px-5 py-8 text-[#17211a] md:px-8 md:py-10">
+    <main className="min-h-screen px-5 py-8 text-[#17211a] md:px-8 md:py-10 bg-[#fbfdf9]">
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <Link
@@ -99,8 +107,7 @@ function HistoryPage() {
           </h1>
 
           <p className="mt-4 max-w-2xl leading-7 text-[#d8e3da]">
-            Review your previously saved journeys and manage the plans you no
-            longer need.
+            Review your previously saved journeys with interactive maps, itinerary schedules, and export features.
           </p>
         </section>
 
@@ -154,6 +161,7 @@ function HistoryPage() {
                 trip={trip}
                 isDeleting={deletingTripId === trip.tripId}
                 onDelete={() => handleDeleteTrip(trip.tripId)}
+                onView={() => handleViewTrip(trip)}
               />
             ))}
           </section>
@@ -163,79 +171,92 @@ function HistoryPage() {
   );
 }
 
-function TripCard({ trip, isDeleting, onDelete }) {
+function TripCard({ trip, isDeleting, onDelete, onView }) {
   const summary = trip.summary || {};
+  const thumbnail = trip.journeyOverview?.thumbnail || "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=600&q=80";
 
   return (
-    <article className="overflow-hidden rounded-[30px] border border-[#e1eadb] bg-white shadow-[0_20px_55px_rgba(40,65,45,0.08)]">
-      <div className="bg-[#173d2e] p-6 text-white">
-        <p className="text-sm font-semibold text-[#cbd9cf]">
-          Saved journey
-        </p>
+    <article className="overflow-hidden rounded-[30px] border border-[#e1eadb] bg-white shadow-[0_20px_55px_rgba(40,65,45,0.08)] flex flex-col justify-between">
+      <div>
+        <div className="relative h-44 bg-[#173d2e] overflow-hidden">
+          <img
+            src={thumbnail}
+            alt={summary.destination}
+            className="w-full h-full object-cover opacity-70"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent p-5 flex flex-col justify-end text-white">
+            <p className="text-xs font-semibold uppercase tracking-wider text-cyan-300">
+              Saved journey
+            </p>
+            <h2 className="text-2xl font-black leading-tight">
+              {summary.source} to {summary.destination}
+            </h2>
+            <p className="text-xs text-slate-300 mt-1">
+              Saved on {formatDate(trip.createdAt)}
+            </p>
+          </div>
+        </div>
 
-        <h2 className="mt-2 text-2xl font-black">
-          {summary.source} to {summary.destination}
-        </h2>
+        <div className="p-6">
+          <div className="grid grid-cols-2 gap-3">
+            <TripDetail
+              icon={CalendarDays}
+              label="Duration"
+              value={`${summary.duration || 0} days`}
+            />
 
-        <p className="mt-3 text-sm text-[#d8e3da]">
-          Saved on {formatDate(trip.createdAt)}
-        </p>
+            <TripDetail
+              icon={Users}
+              label="Travellers"
+              value={`${summary.travellers || 0} people`}
+            />
+
+            <TripDetail
+              icon={CircleDollarSign}
+              label="Budget"
+              value={formatCurrency(summary.estimatedBudget || 0)}
+            />
+
+            <TripDetail
+              icon={Compass}
+              label="Style"
+              value={summary.travelStyle || "Not selected"}
+            />
+          </div>
+
+          <div className="mt-5 rounded-2xl bg-[#f4f9ef] p-4">
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#718078]">
+              Travel dates
+            </p>
+
+            <p className="mt-2 font-bold text-[#34443a]">
+              {formatTripDate(summary.startDate)} -{" "}
+              {formatTripDate(summary.endDate)}
+            </p>
+          </div>
+        </div>
       </div>
 
-      <div className="p-6">
-        <div className="grid grid-cols-2 gap-3">
-          <TripDetail
-            icon={CalendarDays}
-            label="Duration"
-            value={`${summary.duration || 0} days`}
-          />
-
-          <TripDetail
-            icon={Users}
-            label="Travellers"
-            value={`${summary.travellers || 0} people`}
-          />
-
-          <TripDetail
-            icon={CircleDollarSign}
-            label="Budget"
-            value={formatCurrency(summary.estimatedBudget || 0)}
-          />
-
-          <TripDetail
-            icon={Compass}
-            label="Style"
-            value={summary.travelStyle || "Not selected"}
-          />
-        </div>
-
-        <div className="mt-5 rounded-2xl bg-[#f4f9ef] p-4">
-          <p className="text-xs font-black uppercase tracking-[0.16em] text-[#718078]">
-            Travel dates
-          </p>
-
-          <p className="mt-2 font-bold text-[#34443a]">
-            {formatTripDate(summary.startDate)} -{" "}
-            {formatTripDate(summary.endDate)}
-          </p>
-        </div>
+      <div className="p-6 pt-0 flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onView}
+          className="flex-1 flex items-center justify-center gap-2 rounded-full bg-[#173d2e] px-4 py-3 font-extrabold text-white transition hover:bg-[#20533f] text-sm cursor-pointer"
+        >
+          <Eye className="w-4 h-4" /> View Trip
+        </button>
 
         <button
           type="button"
           onClick={onDelete}
           disabled={isDeleting}
-          className="mt-5 flex w-full items-center justify-center gap-2 rounded-full border border-red-200 bg-red-50 px-5 py-3 font-extrabold text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex items-center justify-center p-3 rounded-full border border-red-200 bg-red-50 text-red-700 transition hover:bg-red-100 disabled:opacity-60 cursor-pointer"
+          title="Delete journey"
         >
           {isDeleting ? (
-            <>
-              <LoaderCircle className="h-4 w-4 animate-spin" />
-              Deleting...
-            </>
+            <LoaderCircle className="h-4 w-4 animate-spin" />
           ) : (
-            <>
-              <Trash2 className="h-4 w-4" />
-              Delete journey
-            </>
+            <Trash2 className="h-4 w-4" />
           )}
         </button>
       </div>
