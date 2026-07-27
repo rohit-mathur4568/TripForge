@@ -6,7 +6,6 @@ import ChatBot from "../components/ChatBot";
 import Footer from "../components/Footer";
 import PlatformFeaturesShowcase from "../components/PlatformFeaturesShowcase";
 import PremiumDashboardPreview from "../components/PremiumDashboardPreview";
-import WhyTripForge from "../components/WhyTripForge";
 import {
   ArrowRight,
   Globe2,
