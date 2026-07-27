@@ -34,9 +34,14 @@ def _convert_numbers(value: Any) -> Any:
     return value
 
 
-def save_trip(trip_data: dict[str, Any]) -> dict[str, Any]:
+def save_trip(
+    trip_data: dict[str, Any],
+    owner: dict[str, Any],
+) -> dict[str, Any]:
     item = {
         **trip_data,
+        "ownerEmail": owner["email"],
+        "ownerName": owner["name"],
         "createdAt": datetime.now(timezone.utc).isoformat(),
     }
 
@@ -56,15 +61,24 @@ def save_trip(trip_data: dict[str, Any]) -> dict[str, Any]:
         ) from error
 
 
-def get_all_trips() -> list[dict[str, Any]]:
+def get_user_trips(owner_email: str) -> list[dict[str, Any]]:
     try:
-        response = table.scan()
+        response = table.scan(
+            FilterExpression=Attr("ownerEmail").eq(
+                owner_email.strip().lower()
+            )
+        )
+
         items = response.get("Items", [])
 
         while "LastEvaluatedKey" in response:
             response = table.scan(
-                ExclusiveStartKey=response["LastEvaluatedKey"]
+                FilterExpression=Attr("ownerEmail").eq(
+                    owner_email.strip().lower()
+                ),
+                ExclusiveStartKey=response["LastEvaluatedKey"],
             )
+
             items.extend(response.get("Items", []))
 
         return sorted(
@@ -79,7 +93,10 @@ def get_all_trips() -> list[dict[str, Any]]:
         ) from error
 
 
-def get_trip_by_id(trip_id: str) -> dict[str, Any] | None:
+def get_trip_by_id(
+    trip_id: str,
+    owner_email: str,
+) -> dict[str, Any] | None:
     try:
         response = table.get_item(
             Key={
@@ -87,7 +104,15 @@ def get_trip_by_id(trip_id: str) -> dict[str, Any] | None:
             }
         )
 
-        return response.get("Item")
+        trip = response.get("Item")
+
+        if not trip:
+            return None
+
+        if trip.get("ownerEmail") != owner_email.strip().lower():
+            return None
+
+        return trip
 
     except (ClientError, BotoCoreError) as error:
         raise RuntimeError(
@@ -95,7 +120,18 @@ def get_trip_by_id(trip_id: str) -> dict[str, Any] | None:
         ) from error
 
 
-def delete_trip(trip_id: str) -> bool:
+def delete_trip(
+    trip_id: str,
+    owner_email: str,
+) -> bool:
+    existing_trip = get_trip_by_id(
+        trip_id=trip_id,
+        owner_email=owner_email,
+    )
+
+    if not existing_trip:
+        return False
+
     try:
         response = table.delete_item(
             Key={
@@ -109,19 +145,4 @@ def delete_trip(trip_id: str) -> bool:
     except (ClientError, BotoCoreError) as error:
         raise RuntimeError(
             "Unable to delete the journey."
-        ) from error
-
-
-def trip_exists(trip_id: str) -> bool:
-    try:
-        response = table.scan(
-            FilterExpression=Attr("tripId").eq(trip_id),
-            ProjectionExpression="tripId",
-        )
-
-        return len(response.get("Items", [])) > 0
-
-    except (ClientError, BotoCoreError) as error:
-        raise RuntimeError(
-            "Unable to verify the journey."
         ) from error
