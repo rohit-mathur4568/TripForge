@@ -4,7 +4,31 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <title>TripForge</title>
+    <style>
+      /* Prevent FOUC by setting default background */
+      html { background-color: #fafafa; }
+      html.dark { background-color: #000000; }
+    </style>
+    <script>
+      (function() {
+        try {
+          var isDark = false;
+          // Check if dashboard path (manual override)
+          if (window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/app/')) {
+            var storedTheme = localStorage.getItem('tripforge-theme');
+            if (storedTheme === 'dark') isDark = true;
+          } else {
+            // Auto theme based on time
+            var hour = new Date().getHours();
+            isDark = (hour >= 18 || hour < 6);
+          }
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

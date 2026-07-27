@@ -1,7 +1,7 @@
 const API_BASE_URL = "http://127.0.0.1:8000";
 
 function getAccessToken() {
-  return localStorage.getItem("tripforge_access_token");
+  return localStorage.getItem("tripforge_access_token") || localStorage.getItem("tf_token");
 }
 
 function getRequestHeaders(includeContentType = false) {
@@ -32,9 +32,12 @@ async function handleResponse(response) {
   if (response.status === 401) {
     localStorage.removeItem("tripforge_access_token");
     localStorage.removeItem("tripforge_user");
+    localStorage.removeItem("tf_token");
+    localStorage.removeItem("tf_user");
 
-    window.location.href = "/login";
-
+    // Don't force redirect here since we use a modal on the home page,
+    // let AuthContext handle the unauthenticated state.
+    // Throwing an error will be caught by the components.
     throw new Error("Your session has expired. Please sign in again.");
   }
 
@@ -46,6 +49,31 @@ async function handleResponse(response) {
   }
 
   return responseData;
+}
+
+export async function loginUser(email, password) {
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+  return handleResponse(response);
+}
+
+export async function signupUser(fullName, email, password) {
+  const response = await fetch(`${API_BASE_URL}/auth/signup`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ fullName, email, password }),
+  });
+  return handleResponse(response);
+}
+
+export async function getCurrentUser() {
+  const response = await fetch(`${API_BASE_URL}/auth/me`, {
+    headers: getRequestHeaders(true),
+  });
+  return handleResponse(response);
 }
 
 export async function generateTrip(tripData) {
