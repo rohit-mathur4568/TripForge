@@ -21,7 +21,7 @@ import {
   getSavedTrips,
 } from "../services/tripService";
 
-const COLORS = ['#173d2e', '#39734f', '#78a083', '#eaff9d', '#fef08a'];
+const COLORS = ['#2dd4bf', '#0f766e', '#115e59', '#134e4a', '#a7f3d0'];
 
 function HistoryPage() {
   const navigate = useNavigate();
@@ -114,16 +114,16 @@ function HistoryPage() {
     <div className="space-y-7 pb-10">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-             <h1 className="text-2xl font-black text-[#173d2e] dark:text-white">
+             <h1 className="text-2xl font-black text-[#0a0a0a] dark:text-white">
                Dashboard Overview
              </h1>
-             <p className="text-[#708078] dark:text-slate-400 mt-1 text-sm font-bold">
+             <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm font-bold">
                Welcome back, {user?.name || "Traveller"} 👋
              </p>
           </div>
           <Link
             to={getObfuscatedRoute(user, "/create-trip")}
-            className="rounded-lg bg-[#173d2e] dark:bg-emerald-600 px-5 py-2.5 text-sm font-black text-white transition hover:bg-[#20533f] dark:hover:bg-emerald-500 shadow-md"
+            className="rounded-lg bg-[#0a0a0a] dark:bg-white px-5 py-2.5 text-sm font-black text-white dark:text-black transition hover:bg-[#222] dark:hover:bg-gray-200 shadow-md"
           >
             Plan new journey
           </Link>
@@ -131,39 +131,39 @@ function HistoryPage() {
 
         {analyticsData && (
            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-              <div className="bg-white dark:bg-[#0f172a] rounded-2xl p-5 border border-[#e2eadc] dark:border-slate-800 shadow-sm flex items-start justify-between transition-colors duration-300">
+              <div className="bg-white dark:bg-[#111] rounded-[24px] p-5 border border-gray-200 dark:border-white/10 dark:ring-1 dark:ring-white/5 shadow-sm dark:shadow-none flex items-start justify-between transition-colors duration-300 hover:dark:ring-white/10">
                  <div>
-                    <p className="text-xs font-bold text-[#708078] dark:text-slate-400 uppercase tracking-wider">Total Trips</p>
-                    <p className="text-2xl font-black text-[#173d2e] dark:text-white mt-1">{trips.length}</p>
+                    <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Trips</p>
+                    <p className="text-2xl font-black text-[#0a0a0a] dark:text-white mt-1">{trips.length}</p>
                  </div>
-                 <div className="w-10 h-10 rounded-xl bg-[#edf8d9] dark:bg-slate-800 text-[#39734f] dark:text-emerald-400 flex items-center justify-center border border-transparent dark:border-slate-700">
+                 <div className="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center border border-transparent dark:border-teal-500/20">
                     <MapPin className="w-5 h-5" />
                  </div>
               </div>
-              <div className="bg-white dark:bg-[#0f172a] rounded-2xl p-5 border border-[#e2eadc] dark:border-slate-800 shadow-sm flex items-start justify-between transition-colors duration-300">
+              <div className="bg-white dark:bg-[#111] rounded-[24px] p-5 border border-gray-200 dark:border-white/10 dark:ring-1 dark:ring-white/5 shadow-sm dark:shadow-none flex items-start justify-between transition-colors duration-300 hover:dark:ring-white/10">
                  <div>
-                    <p className="text-xs font-bold text-[#708078] dark:text-slate-400 uppercase tracking-wider">Total Budget</p>
-                    <p className="text-2xl font-black text-[#173d2e] dark:text-white mt-1">{formatCurrency(analyticsData.totalBudget)}</p>
+                    <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Budget</p>
+                    <p className="text-2xl font-black text-[#0a0a0a] dark:text-white mt-1">{formatCurrency(analyticsData.totalBudget)}</p>
                  </div>
-                 <div className="w-10 h-10 rounded-xl bg-[#fff9cf] dark:bg-slate-800 text-[#8a7213] dark:text-yellow-400 flex items-center justify-center border border-transparent dark:border-slate-700">
+                 <div className="w-10 h-10 rounded-xl bg-yellow-50 dark:bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 flex items-center justify-center border border-transparent dark:border-yellow-500/20">
                     <CircleDollarSign className="w-5 h-5" />
                  </div>
               </div>
-              <div className="bg-white dark:bg-[#0f172a] rounded-2xl p-5 border border-[#e2eadc] dark:border-slate-800 shadow-sm flex items-start justify-between transition-colors duration-300">
+              <div className="bg-white dark:bg-[#111] rounded-[24px] p-5 border border-gray-200 dark:border-white/10 dark:ring-1 dark:ring-white/5 shadow-sm dark:shadow-none flex items-start justify-between transition-colors duration-300 hover:dark:ring-white/10">
                  <div>
-                    <p className="text-xs font-bold text-[#708078] dark:text-slate-400 uppercase tracking-wider">Total Travellers</p>
-                    <p className="text-2xl font-black text-[#173d2e] dark:text-white mt-1">{trips.reduce((acc, trip) => acc + (trip.summary?.travellers || 0), 0)}</p>
+                    <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Travellers</p>
+                    <p className="text-2xl font-black text-[#0a0a0a] dark:text-white mt-1">{trips.reduce((acc, trip) => acc + (trip.summary?.travellers || 0), 0)}</p>
                  </div>
-                 <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 flex items-center justify-center border border-transparent dark:border-slate-700">
+                 <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center border border-transparent dark:border-blue-500/20">
                     <Users className="w-5 h-5" />
                  </div>
               </div>
-              <div className="bg-white dark:bg-[#0f172a] rounded-2xl p-5 border border-[#e2eadc] dark:border-slate-800 shadow-sm flex items-start justify-between transition-colors duration-300">
+              <div className="bg-white dark:bg-[#111] rounded-[24px] p-5 border border-gray-200 dark:border-white/10 dark:ring-1 dark:ring-white/5 shadow-sm dark:shadow-none flex items-start justify-between transition-colors duration-300 hover:dark:ring-white/10">
                  <div>
-                    <p className="text-xs font-bold text-[#708078] dark:text-slate-400 uppercase tracking-wider">Total Days</p>
-                    <p className="text-2xl font-black text-[#173d2e] dark:text-white mt-1">{trips.reduce((acc, trip) => acc + (trip.summary?.duration || 0), 0)}</p>
+                    <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Days</p>
+                    <p className="text-2xl font-black text-[#0a0a0a] dark:text-white mt-1">{trips.reduce((acc, trip) => acc + (trip.summary?.duration || 0), 0)}</p>
                  </div>
-                 <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-slate-800 text-purple-600 dark:text-purple-400 flex items-center justify-center border border-transparent dark:border-slate-700">
+                 <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center border border-transparent dark:border-purple-500/20">
                     <CalendarDays className="w-5 h-5" />
                  </div>
               </div>
@@ -173,10 +173,10 @@ function HistoryPage() {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-7">
            {/* Chart Section */}
            {analyticsData && (
-              <div className="xl:col-span-1 bg-white dark:bg-[#0f172a] rounded-2xl p-6 border border-[#e2eadc] dark:border-slate-800 shadow-sm flex flex-col transition-colors duration-300">
+              <div className="xl:col-span-1 bg-white dark:bg-[#111] rounded-[24px] p-6 border border-gray-200 dark:border-white/10 dark:ring-1 dark:ring-white/5 shadow-sm dark:shadow-none flex flex-col transition-colors duration-300">
                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-base font-black text-[#173d2e] dark:text-white">Expenditure Breakdown</h2>
-                    <PieChartIcon className="w-5 h-5 text-[#708078] dark:text-slate-500" />
+                    <h2 className="text-base font-black text-[#0a0a0a] dark:text-white">Expenditure Breakdown</h2>
+                    <PieChartIcon className="w-5 h-5 text-gray-400 dark:text-gray-500" />
                  </div>
                  <div className="flex-1 min-h-[250px] w-full relative">
                     <ResponsiveContainer width="100%" height="100%">
@@ -196,7 +196,7 @@ function HistoryPage() {
                         </Pie>
                         <Tooltip 
                            formatter={(value) => formatCurrency(value)}
-                           contentStyle={{ borderRadius: '12px', border: '1px solid #e2eadc', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', backgroundColor: '#fff', color: '#000' }}
+                           contentStyle={{ borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 4px 20px rgba(0,0,0,0.2)', backgroundColor: '#111', color: '#fff' }}
                         />
                         <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: '12px', fontWeight: 'bold' }}/>
                       </PieChart>
@@ -206,14 +206,14 @@ function HistoryPage() {
            )}
 
            {/* Trips Section */}
-           <div className={`bg-white dark:bg-[#0f172a] rounded-2xl p-6 border border-[#e2eadc] dark:border-slate-800 shadow-sm transition-colors duration-300 ${analyticsData ? 'xl:col-span-2' : 'xl:col-span-3'}`}>
+           <div className={`bg-white dark:bg-[#111] rounded-[24px] p-6 border border-gray-200 dark:border-white/10 dark:ring-1 dark:ring-white/5 shadow-sm dark:shadow-none transition-colors duration-300 ${analyticsData ? 'xl:col-span-2' : 'xl:col-span-3'}`}>
               <div className="flex items-center justify-between mb-6">
-                 <h2 className="text-base font-black text-[#173d2e] dark:text-white">Recent Journeys</h2>
-                 <Link to="#" className="text-sm font-bold text-[#39734f] dark:text-emerald-400 hover:underline">View All</Link>
+                 <h2 className="text-base font-black text-[#0a0a0a] dark:text-white">Recent Journeys</h2>
+                 <Link to="#" className="text-sm font-bold text-teal-600 dark:text-teal-400 hover:underline">View All</Link>
               </div>
 
               {errorMessage && (
-                <div className="mb-6 rounded-xl border border-red-200 bg-red-50 dark:bg-red-900/20 dark:border-red-900 p-4 text-red-800 dark:text-red-400 text-sm font-bold flex justify-between items-center">
+                <div className="mb-6 rounded-xl border border-red-200 bg-red-50 dark:bg-red-900/10 dark:border-red-900/30 p-4 text-red-800 dark:text-red-400 text-sm font-bold flex justify-between items-center">
                   <p>{errorMessage}</p>
                   <button onClick={loadTrips} className="bg-white dark:bg-transparent text-red-700 dark:text-red-400 px-3 py-1 rounded-lg border border-red-200 dark:border-red-800 hover:dark:bg-red-900/50">Retry</button>
                 </div>
@@ -221,13 +221,13 @@ function HistoryPage() {
 
               {isLoading ? (
                 <div className="flex min-h-[200px] items-center justify-center">
-                  <LoaderCircle className="h-8 w-8 animate-spin text-[#39734f] dark:text-emerald-400" />
+                  <LoaderCircle className="h-8 w-8 animate-spin text-teal-600 dark:text-teal-400" />
                 </div>
               ) : trips.length === 0 ? (
-                <div className="rounded-xl border border-dashed border-[#cbdac1] dark:border-slate-700 bg-[#fbfdf9] dark:bg-slate-800/50 p-10 text-center">
-                  <MapPin className="mx-auto h-10 w-10 text-[#78a083] dark:text-slate-500" />
-                  <h3 className="mt-4 text-lg font-black text-[#173d2e] dark:text-white">No saved journeys yet</h3>
-                  <p className="mx-auto mt-2 text-sm text-[#708078] dark:text-slate-400 max-w-sm">
+                <div className="rounded-[24px] border border-dashed border-gray-300 dark:border-white/10 bg-gray-50 dark:bg-[#1a1a1a] p-10 text-center">
+                  <MapPin className="mx-auto h-10 w-10 text-gray-400 dark:text-gray-500" />
+                  <h3 className="mt-4 text-lg font-black text-[#0a0a0a] dark:text-white">No saved journeys yet</h3>
+                  <p className="mx-auto mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-sm">
                     Create your first travel plan and it will appear here.
                   </p>
                 </div>
@@ -255,22 +255,22 @@ function TripCard({ trip, isDeleting, onDelete, onView }) {
   const thumbnail = trip.journeyOverview?.thumbnail || "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=600&q=80";
 
   return (
-    <article className="overflow-hidden rounded-[30px] border border-[#e1eadb] dark:border-slate-700 bg-white dark:bg-[#0b1120] shadow-[0_20px_55px_rgba(40,65,45,0.08)] flex flex-col justify-between transition-colors duration-300">
+    <article className="overflow-hidden rounded-[24px] border border-gray-200 dark:border-white/10 dark:ring-1 dark:ring-white/5 bg-white dark:bg-[#1a1a1a] shadow-sm dark:shadow-none flex flex-col justify-between transition-colors duration-300 group hover:dark:ring-white/10">
       <div>
-        <div className="relative h-44 bg-[#173d2e] overflow-hidden">
+        <div className="relative h-44 bg-teal-900 overflow-hidden">
           <img
             src={thumbnail}
             alt={summary.destination}
-            className="w-full h-full object-cover opacity-70"
+            className="w-full h-full object-cover opacity-70 group-hover:scale-105 transition-transform duration-700"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent p-5 flex flex-col justify-end text-white">
-            <p className="text-xs font-semibold uppercase tracking-wider text-cyan-300">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-5 flex flex-col justify-end text-white">
+            <p className="text-xs font-semibold uppercase tracking-wider text-teal-300">
               Saved journey
             </p>
             <h2 className="text-2xl font-black leading-tight">
               {summary.source} to {summary.destination}
             </h2>
-            <p className="text-xs text-slate-300 mt-1">
+            <p className="text-xs text-gray-300 mt-1">
               Saved on {formatDate(trip.createdAt)}
             </p>
           </div>
@@ -303,12 +303,12 @@ function TripCard({ trip, isDeleting, onDelete, onView }) {
             />
           </div>
 
-          <div className="mt-5 rounded-2xl bg-[#f4f9ef] dark:bg-slate-800 p-4 border border-transparent dark:border-slate-700">
-            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#718078] dark:text-slate-400">
+          <div className="mt-5 rounded-xl bg-gray-50 dark:bg-[#222] p-4 border border-transparent dark:border-white/5">
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">
               Travel dates
             </p>
 
-            <p className="mt-2 font-bold text-[#34443a] dark:text-white">
+            <p className="mt-2 font-bold text-[#0a0a0a] dark:text-white">
               {formatTripDate(summary.startDate)} -{" "}
               {formatTripDate(summary.endDate)}
             </p>
@@ -320,7 +320,7 @@ function TripCard({ trip, isDeleting, onDelete, onView }) {
         <button
           type="button"
           onClick={onView}
-          className="flex-1 flex items-center justify-center gap-2 rounded-full bg-[#173d2e] dark:bg-emerald-600 px-4 py-3 font-extrabold text-white transition hover:bg-[#20533f] dark:hover:bg-emerald-500 text-sm cursor-pointer shadow-sm"
+          className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-[#0a0a0a] dark:bg-white px-4 py-3 font-extrabold text-white dark:text-black transition hover:bg-[#222] dark:hover:bg-gray-200 text-sm cursor-pointer shadow-sm"
         >
           <Eye className="w-4 h-4" /> View Trip
         </button>
@@ -329,7 +329,7 @@ function TripCard({ trip, isDeleting, onDelete, onView }) {
           type="button"
           onClick={onDelete}
           disabled={isDeleting}
-          className="flex items-center justify-center p-3 rounded-full border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 transition hover:bg-red-100 disabled:opacity-60 cursor-pointer"
+          className="flex items-center justify-center p-3 rounded-xl border border-red-200 dark:border-red-900/30 bg-red-50 dark:bg-red-900/10 text-red-700 dark:text-red-400 transition hover:bg-red-100 disabled:opacity-60 cursor-pointer"
           title="Delete journey"
         >
           {isDeleting ? (
@@ -345,10 +345,10 @@ function TripCard({ trip, isDeleting, onDelete, onView }) {
 
 function TripDetail({ icon: Icon, label, value }) {
   return (
-    <div className="rounded-2xl border border-[#e2eadc] dark:border-slate-700 bg-[#fbfdf9] dark:bg-slate-800/50 p-4 transition-colors duration-300">
-      <Icon className="h-5 w-5 text-[#39734f] dark:text-emerald-400" />
+    <div className="rounded-xl border border-gray-200 dark:border-white/5 bg-gray-50 dark:bg-[#222] p-4 transition-colors duration-300">
+      <Icon className="h-5 w-5 text-teal-600 dark:text-teal-400" />
 
-      <p className="mt-3 text-xs font-bold text-[#78847c] dark:text-slate-400">
+      <p className="mt-3 text-xs font-bold text-gray-500 dark:text-gray-400">
         {label}
       </p>
 
