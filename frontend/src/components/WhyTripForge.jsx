@@ -27,7 +27,7 @@ export default function WhyTripForge() {
              Intelligence at <br className="hidden md:block" /> every coordinate.
            </h2>
            <p className="text-gray-500 dark:text-gray-400 font-medium text-lg">
-             TripForge doesn't just list places. It operates an entire fleet of AI agents to orchestrate, budget, and map your journey.
+             TripForge doesn't just list places. It operates a smart engine to orchestrate, budget, and map your journey.
            </p>
         </div>
 
@@ -40,9 +40,9 @@ export default function WhyTripForge() {
                  <BrainCircuit className="w-6 h-6 text-[#173d2e] dark:text-teal-400" />
               </div>
               <div className="relative z-10 max-w-md">
-                 <h3 className="text-2xl lg:text-3xl font-black text-[#0a0a0a] dark:text-white tracking-tight mb-3">Multi-Agent Orchestration</h3>
+                 <h3 className="text-2xl lg:text-3xl font-black text-[#0a0a0a] dark:text-white tracking-tight mb-3">Smart Orchestration</h3>
                  <p className="text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
-                   Behind the scenes, a Supervisor AI directs specialized sub-agents. One agent hunts for the best stays, another maps the most efficient routes, and a third balances your budget—all working in parallel.
+                   Behind the scenes, a Supervisor engine directs specialized modules. One module hunts for the best stays, another maps the most efficient routes, and a third balances your budget—all working in parallel.
                  </p>
               </div>
               

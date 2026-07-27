@@ -170,7 +170,7 @@ function RegisterPage() {
               Start your journey today.
             </h2>
             <p className="mt-2 text-sm leading-snug text-gray-300 max-w-[200px]">
-              Unlock hyper-personalized AI travel planning.
+              Unlock hyper-personalized smart travel planning.
             </p>
           </div>
         </div>

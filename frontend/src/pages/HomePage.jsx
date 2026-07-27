@@ -122,16 +122,16 @@ export default function HomePage() {
         <div className="relative mx-auto max-w-7xl px-6 md:px-8 text-center flex flex-col items-center z-10">
           
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/50 dark:bg-white/5 border border-gray-200 dark:border-white/10 mb-8 text-gray-600 dark:text-gray-300 text-xs font-bold tracking-widest uppercase shadow-sm backdrop-blur-sm">
-            Introducing TripForge AI v2.0
+            Introducing TripForge v2.0
           </div>
           
           <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[85px] font-black tracking-tight leading-[1.05] text-[#0a0a0a] dark:text-white max-w-5xl mx-auto">
             Travel planning, <br className="hidden md:block" /> 
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#173d2e] to-[#39734f] dark:from-teal-300 dark:to-emerald-400">perfected by AI.</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#173d2e] to-[#39734f] dark:from-teal-300 dark:to-emerald-400">perfected for you.</span>
           </h1>
           
           <p className="mt-8 text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed font-medium">
-            Generate hyper-personalized, budget-optimized global itineraries in seconds using our advanced multi-agent orchestration engine. No more endless tabs.
+            Generate hyper-personalized, budget-optimized global itineraries in seconds. No more endless tabs.
           </p>
           
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
@@ -174,7 +174,7 @@ export default function HomePage() {
             <div className="mb-12 flex flex-col md:flex-row justify-between items-end gap-4">
                <div>
                   <h2 className="text-3xl md:text-4xl font-black text-[#0a0a0a] dark:text-white tracking-tight">Curated Escapes</h2>
-                  <p className="text-gray-500 dark:text-gray-400 mt-2 font-medium">Explore AI-optimized routes for top global destinations.</p>
+                  <p className="text-gray-500 dark:text-gray-400 mt-2 font-medium">Explore smart optimized routes for top global destinations.</p>
                </div>
                <button onClick={handleStartPlanning} className="text-[#173d2e] dark:text-teal-400 font-bold text-sm hover:underline flex items-center gap-1">
                   View all destinations <ArrowRight className="w-4 h-4" />
