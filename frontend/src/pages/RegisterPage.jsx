@@ -86,18 +86,32 @@ function RegisterPage() {
 
       if (!response.ok) {
         throw new Error(
-          responseData.detail ||
-            "Unable to create the account. Please try again."
+          responseData.detail || "Unable to register. Please try again."
         );
       }
 
-      navigate("/login", {
-        replace: true,
-        state: {
-          registrationMessage:
-            "Account created successfully. Please sign in.",
-          registeredEmail: formData.email.trim().toLowerCase(),
+      const loginResponse = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({
+          email: formData.email.trim().toLowerCase(),
+          password: formData.password,
+        }),
+      });
+
+      const loginData = await loginResponse.json();
+
+      if (!loginResponse.ok) {
+        throw new Error("Registration successful, but unable to sign in.");
+      }
+
+      localStorage.setItem("tripforge_access_token", loginData.accessToken);
+      localStorage.setItem("tripforge_user", JSON.stringify(loginData.user));
+
+      navigate("/", {
+        replace: true,
       });
     } catch (error) {
       setErrorMessage(error.message);
@@ -112,43 +126,35 @@ function RegisterPage() {
       <div className="pointer-events-none absolute bottom-0 right-[-100px] h-80 w-80 rounded-full bg-[#fef08a]/55 blur-3xl" />
 
       <section className="relative grid w-full max-w-5xl overflow-hidden rounded-[36px] border border-white bg-white/90 shadow-[0_30px_90px_rgba(40,65,45,0.15)] backdrop-blur-xl lg:grid-cols-[0.9fr_1.1fr]">
-        <div className="relative overflow-hidden bg-[#173d2e] p-8 text-white md:p-11">
-          <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#eaff9d]/10 blur-3xl" />
+        <div className="relative overflow-hidden p-8 text-white md:p-11 flex flex-col justify-between min-h-[400px]">
+          <div 
+             className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
+             style={{ backgroundImage: `url(${bgImage})` }} 
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#091811]/90 via-[#091811]/40 to-[#091811]/20" />
 
-          <div className="relative">
+          <div className="relative z-10">
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#eaff9d] text-[#173d2e]">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#eaff9d] text-[#173d2e] shadow-lg">
                 <Globe2 className="h-6 w-6" />
               </div>
 
               <div>
-                <h1 className="text-2xl font-black">TripForge</h1>
-
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#c9d9cd]">
+                <h1 className="text-2xl font-black text-white shadow-sm">TripForge</h1>
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#eaff9d]">
                   Smart Travel Planner
                 </p>
               </div>
             </div>
+          </div>
 
-            <h2 className="mt-14 text-4xl font-black leading-tight md:text-5xl">
-              Create your account and start planning.
+          <div className="relative z-10 mt-14">
+            <h2 className="text-4xl font-black leading-tight md:text-5xl text-white">
+              Start your journey today.
             </h2>
-
-            <p className="mt-6 max-w-md leading-7 text-[#d7e3da]">
-              Register once to create personalised journeys and manage your
-              saved travel plans.
+            <p className="mt-4 max-w-md leading-7 text-slate-300">
+              Create an account to unlock hyper-personalized, multi-agent AI travel planning for free.
             </p>
-
-            <div className="mt-12 rounded-[26px] border border-white/10 bg-white/10 p-5">
-              <p className="text-sm font-bold text-[#eaff9d]">
-                Secure account creation
-              </p>
-
-              <p className="mt-3 text-sm leading-6 text-[#d7e3da]">
-                Your password is stored securely and never saved in readable
-                form.
-              </p>
-            </div>
           </div>
         </div>
 

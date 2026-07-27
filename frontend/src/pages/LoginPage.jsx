@@ -14,6 +14,14 @@ import {
 
 const API_BASE_URL = "http://127.0.0.1:8000";
 
+const travelImages = [
+  "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=800&q=80", // Paris
+  "https://images.unsplash.com/photo-1526392060635-9d6019884377?auto=format&fit=crop&w=800&q=80", // Machu Picchu
+  "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=800&q=80", // Bali
+  "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=800&q=80", // Rome
+  "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=800&q=80"  // Alps
+];
+
 function LoginPage() {
   const navigate = useNavigate();
 
@@ -22,8 +30,15 @@ function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [bgImage, setBgImage] = useState(travelImages[0]);
 
   const accessToken = localStorage.getItem("tripforge_access_token");
+
+  // On mount, select a random image
+  useState(() => {
+    const randomIndex = Math.floor(Math.random() * travelImages.length);
+    setBgImage(travelImages[randomIndex]);
+  }, []);
 
   if (accessToken) {
     return <Navigate to="/" replace />;
@@ -85,42 +100,36 @@ function LoginPage() {
       <div className="pointer-events-none absolute bottom-0 right-[-100px] h-80 w-80 rounded-full bg-[#fef08a]/55 blur-3xl" />
 
       <section className="relative grid w-full max-w-5xl overflow-hidden rounded-[36px] border border-white bg-white/90 shadow-[0_30px_90px_rgba(40,65,45,0.15)] backdrop-blur-xl lg:grid-cols-[0.9fr_1.1fr]">
-        <div className="relative overflow-hidden bg-[#173d2e] p-8 text-white md:p-11">
-          <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#eaff9d]/10 blur-3xl" />
+        <div className="relative overflow-hidden p-8 text-white md:p-11 flex flex-col justify-between min-h-[400px]">
+          <div 
+             className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
+             style={{ backgroundImage: `url(${bgImage})` }} 
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#091811]/90 via-[#091811]/40 to-[#091811]/20" />
 
-          <div className="relative">
+          <div className="relative z-10">
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#eaff9d] text-[#173d2e]">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#eaff9d] text-[#173d2e] shadow-lg">
                 <Globe2 className="h-6 w-6" />
               </div>
 
               <div>
-                <h1 className="text-2xl font-black">TripForge</h1>
-
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#c9d9cd]">
+                <h1 className="text-2xl font-black text-white shadow-sm">TripForge</h1>
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#eaff9d]">
                   Smart Travel Planner
                 </p>
               </div>
             </div>
+          </div>
 
-            <h2 className="mt-14 text-4xl font-black leading-tight md:text-5xl">
+          <div className="relative z-10 mt-14">
+            <h2 className="text-4xl font-black leading-tight md:text-5xl text-white">
               Welcome back to your journey planner.
             </h2>
-
-            <p className="mt-6 max-w-md leading-7 text-[#d7e3da]">
+            <p className="mt-4 max-w-md leading-7 text-slate-300">
               Sign in to prepare personalised travel plans and manage your
               saved journeys.
             </p>
-
-            <div className="mt-12 rounded-[26px] border border-white/10 bg-white/10 p-5">
-              <p className="text-sm font-bold text-[#eaff9d]">
-                Your account is securely verified.
-              </p>
-
-              <p className="mt-3 text-sm leading-6 text-[#d7e3da]">
-                Your password is never stored in readable form.
-              </p>
-            </div>
           </div>
         </div>
 

@@ -131,7 +131,7 @@ export default function AuthModal() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0b1712]/80 backdrop-blur-md p-4 animate-in fade-in duration-300">
-      <div className="relative w-full max-w-4xl bg-[#173d2e] border border-emerald-900/40 rounded-3xl shadow-2xl overflow-hidden text-white grid grid-cols-1 md:grid-cols-2">
+      <div className="relative w-full max-w-4xl max-h-[95vh] overflow-y-auto bg-[#173d2e] border border-emerald-900/40 rounded-3xl shadow-2xl overflow-hidden text-white grid grid-cols-1 md:grid-cols-2">
         
         {/* Left Side: Seamless Crossfade Banner */}
         <div className="relative hidden md:flex flex-col justify-between p-8 overflow-hidden min-h-[500px] bg-[#173d2e]">

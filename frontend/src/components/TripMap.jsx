@@ -20,7 +20,7 @@ export default function TripMap({ itinerary = [], centerLat, centerLng, destinat
     .map((item) => [item.latitude, item.longitude]);
 
   return (
-    <div className="relative w-full h-[400px] rounded-2xl overflow-hidden border border-slate-800 shadow-xl z-0">
+    <div className="relative w-full h-[300px] md:h-[400px] rounded-2xl overflow-hidden border border-slate-800 shadow-xl z-0">
       <MapContainer
         center={[defaultLat, defaultLng]}
         zoom={12}

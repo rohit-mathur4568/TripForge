@@ -1,13 +1,8 @@
 import React from "react";
-import { CheckCircle2, Navigation, Clock, ShieldCheck, Share2, Download } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router";
+import { ShieldCheck, Compass, CircleDollarSign, CalendarDays, ArrowRight, MapPin, Sparkles, CheckCircle2, Clock, Navigation, Share2, Download } from "lucide-react";
+import { Link } from "react-router";
 
-export default function WhyTripForge() {
-  const { openAuthModal } = useAuth();
-  const navigate = useNavigate();
-
-  return (
+export default function WhyTripForge() {  return (
     <div className="bg-white border-y border-[#e2eadc]">
       {/* Why Choose Section */}
       <section className="mx-auto max-w-7xl px-5 py-20 md:px-8 lg:py-28">
@@ -91,12 +86,12 @@ export default function WhyTripForge() {
               </div>
            </div>
 
-           <button 
-             onClick={() => openAuthModal("signup")}
-             className="mt-12 bg-[#eaff9d] hover:bg-white text-[#173d2e] px-8 py-4 rounded-full font-black text-lg transition duration-300 shadow-xl shadow-green-900/30"
+           <Link 
+             to="/register"
+             className="mt-12 inline-block bg-[#eaff9d] hover:bg-white text-[#173d2e] px-8 py-4 rounded-full font-black text-lg transition duration-300 shadow-xl shadow-green-900/30"
            >
              Start Your Adventure Now
-           </button>
+           </Link>
         </div>
       </section>
     </div>

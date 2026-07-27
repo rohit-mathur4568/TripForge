@@ -178,7 +178,7 @@ function ResultPage() {
                 </p>
               </div>
 
-              <div className="rounded-[26px] bg-[#eaff9d] px-6 py-5 text-[#173d2e] shadow-xl">
+              <div className="w-full lg:w-auto rounded-[26px] bg-[#eaff9d] px-6 py-5 text-[#173d2e] shadow-xl">
                 <p className="text-xs font-black uppercase tracking-[0.18em]">
                   Estimated budget
                 </p>
@@ -219,26 +219,36 @@ function ResultPage() {
           </div>
         </section>
 
-        {/* Interactive Map Visualizer */}
-        <section className="mt-7 rounded-[32px] border border-[#e1eadb] bg-white p-6 shadow-[0_22px_60px_rgba(40,65,45,0.08)] md:p-8">
-          <SectionHeader
-            icon={MapIcon}
-            eyebrow="Interactive Route Map"
-            title={`Journey Map: ${summary.destination}`}
-            description="Explore your day-by-day itinerary waypoints and route."
-          />
-          <div className="mt-6">
-            <TripMap
-              itinerary={itinerary}
-              centerLat={journeyOverview?.latitude}
-              centerLng={journeyOverview?.longitude}
-              destinationName={summary.destination}
-            />
-          </div>
-        </section>
 
-        <div className="mt-7 grid items-start gap-7 lg:grid-cols-[1.35fr_0.65fr]">
+        {/* Split Screen Layout */}
+        <div className="mt-7 grid items-start gap-7 lg:grid-cols-[1.1fr_0.9fr]">
+          
+          {/* LEFT PANE: Details, Budget, and Itinerary */}
           <div className="space-y-7">
+            
+            {/* Budget Breakdown moved here */}
+            <section className="rounded-[32px] border border-[#e1eadb] bg-white p-6 shadow-[0_22px_60px_rgba(40,65,45,0.08)]">
+              <SectionHeader
+                icon={CircleDollarSign}
+                eyebrow="Expense plan"
+                title="Budget breakdown"
+                description="An estimated distribution of your total budget."
+              />
+
+              <div className="mt-7 space-y-4">
+                <BudgetRow label="Transport" value={budgetBreakdown.transport} />
+                <BudgetRow label="Accommodation" value={budgetBreakdown.accommodation} />
+                <BudgetRow label="Food" value={budgetBreakdown.food} />
+                <BudgetRow label="Activities" value={budgetBreakdown.activities} />
+                <BudgetRow label="Reserve" value={budgetBreakdown.reserve} />
+                <div className="mt-5 flex items-center justify-between rounded-2xl bg-[#173d2e] px-5 py-4 text-white shadow-md">
+                  <span className="font-black">Total budget</span>
+                  <span className="text-xl font-black">{formatCurrency(budgetBreakdown.totalBudget)}</span>
+                </div>
+              </div>
+            </section>
+
+            {/* Itinerary */}
             <section className="rounded-[32px] border border-[#e1eadb] bg-white p-6 shadow-[0_22px_60px_rgba(40,65,45,0.08)] md:p-8">
               <SectionHeader
                 icon={Route}
@@ -246,42 +256,27 @@ function ResultPage() {
                 title="Your day-wise itinerary"
                 description="Follow this organised schedule throughout your journey."
               />
-
               <div className="mt-8 space-y-5">
                 {itinerary.map((day) => (
-                  <article
-                    key={day.day}
-                    className="relative rounded-[26px] border border-[#e2eadc] bg-[#fbfdf9] p-6 shadow-sm"
-                  >
+                  <article key={day.day} className="relative rounded-[26px] border border-[#e2eadc] bg-[#fbfdf9] p-6 shadow-sm">
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
                       <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#173d2e] text-lg font-black text-white shadow-md">
                         {day.day}
                       </div>
-
                       <div className="flex-1">
                         <div className="flex items-center justify-between flex-wrap gap-2">
-                          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#708078]">
-                            Day {day.day}
-                          </p>
+                          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#708078]">Day {day.day}</p>
                           {day.locationName && (
                             <span className="text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">
                               📍 {day.locationName}
                             </span>
                           )}
                         </div>
-
-                        <h3 className="mt-2 text-xl font-black">
-                          {day.title}
-                        </h3>
-
+                        <h3 className="mt-2 text-xl font-black">{day.title}</h3>
                         <div className="mt-5 space-y-3">
                           {day.activities.map((activity) => (
-                            <div
-                              key={activity}
-                              className="flex items-start gap-3 text-[#5f6d64]"
-                            >
+                            <div key={activity} className="flex items-start gap-3 text-[#5f6d64]">
                               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#568064]" />
-
                               <p className="leading-6">{activity}</p>
                             </div>
                           ))}
@@ -293,113 +288,61 @@ function ResultPage() {
               </div>
             </section>
 
-            <section className="rounded-[32px] border border-[#e1eadb] bg-white p-6 shadow-[0_22px_60px_rgba(40,65,45,0.08)] md:p-8">
-              <SectionHeader
-                icon={Sparkles}
-                eyebrow="Recommendations"
-                title="Helpful journey suggestions"
-                description="Practical options for travel, accommodation and food."
-              />
+            {/* Travel Reminders & Recommendations */}
+            <div className="grid sm:grid-cols-2 gap-7">
+               <section className="rounded-[32px] border border-[#e1eadb] bg-[#fff9cf] p-6 shadow-[0_22px_60px_rgba(40,65,45,0.06)] h-full">
+                 <SectionHeader
+                   icon={CheckCircle2}
+                   eyebrow="Travel reminders"
+                   title="Before you leave"
+                   description="Keep these important points in mind."
+                 />
+                 <div className="mt-6 space-y-4">
+                   {travelTips.map((tip) => (
+                     <div key={tip} className="flex items-start gap-3">
+                       <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#39734f]" />
+                       <p className="text-sm leading-6 text-[#56665c]">{tip}</p>
+                     </div>
+                   ))}
+                 </div>
+               </section>
 
-              <div className="mt-8 grid gap-5 md:grid-cols-3">
-                <RecommendationCard
-                  icon={Car}
-                  title="Transport"
-                  items={recommendations.transport}
-                />
-
-                <RecommendationCard
-                  icon={BedDouble}
-                  title="Accommodation"
-                  items={recommendations.accommodation}
-                />
-
-                <RecommendationCard
-                  icon={Utensils}
-                  title="Food"
-                  items={recommendations.food}
-                />
-              </div>
-            </section>
+               <section className="rounded-[32px] border border-[#e1eadb] bg-white p-6 shadow-[0_22px_60px_rgba(40,65,45,0.06)] h-full flex flex-col justify-center">
+                  <SectionHeader
+                    icon={Sparkles}
+                    eyebrow="Recommendations"
+                    title="Helpful suggestions"
+                    description="Options for transport, food, etc."
+                  />
+                  <div className="mt-4 flex flex-wrap gap-2">
+                     <span className="px-3 py-1 bg-slate-100 text-slate-700 rounded-lg text-sm font-bold">Transport: {recommendations.transport.length}</span>
+                     <span className="px-3 py-1 bg-slate-100 text-slate-700 rounded-lg text-sm font-bold">Food: {recommendations.food.length}</span>
+                     <span className="px-3 py-1 bg-slate-100 text-slate-700 rounded-lg text-sm font-bold">Stays: {recommendations.accommodation.length}</span>
+                  </div>
+               </section>
+            </div>
           </div>
 
-          <aside className="space-y-7 lg:sticky lg:top-7">
-            <section className="rounded-[32px] border border-[#e1eadb] bg-white p-6 shadow-[0_22px_60px_rgba(40,65,45,0.08)]">
-              <SectionHeader
-                icon={CircleDollarSign}
-                eyebrow="Expense plan"
-                title="Budget breakdown"
-                description="An estimated distribution of your total budget."
-              />
-
-              <div className="mt-7 space-y-4">
-                <BudgetRow
-                  label="Transport"
-                  value={budgetBreakdown.transport}
+          {/* RIGHT PANE: Sticky Interactive Map */}
+          <aside className="lg:sticky lg:top-24 lg:h-[calc(100vh-8rem)]">
+            <section className="rounded-[32px] border border-[#e1eadb] bg-white p-6 shadow-[0_22px_60px_rgba(40,65,45,0.1)] h-full flex flex-col overflow-hidden">
+              <div className="mb-4">
+                 <SectionHeader
+                   icon={MapIcon}
+                   eyebrow="Interactive Route Map"
+                   title="Your Map"
+                   description="Explore your day-by-day itinerary."
+                 />
+              </div>
+              <div className="flex-1 w-full relative min-h-[400px] lg:min-h-0 rounded-2xl overflow-hidden shadow-inner">
+                <TripMap
+                  itinerary={itinerary}
+                  centerLat={journeyOverview?.latitude}
+                  centerLng={journeyOverview?.longitude}
+                  destinationName={summary.destination}
                 />
-
-                <BudgetRow
-                  label="Accommodation"
-                  value={budgetBreakdown.accommodation}
-                />
-
-                <BudgetRow
-                  label="Food"
-                  value={budgetBreakdown.food}
-                />
-
-                <BudgetRow
-                  label="Activities"
-                  value={budgetBreakdown.activities}
-                />
-
-                <BudgetRow
-                  label="Reserve"
-                  value={budgetBreakdown.reserve}
-                />
-
-                <div className="mt-5 flex items-center justify-between rounded-2xl bg-[#173d2e] px-5 py-4 text-white shadow-md">
-                  <span className="font-black">Total budget</span>
-
-                  <span className="text-xl font-black">
-                    {formatCurrency(budgetBreakdown.totalBudget)}
-                  </span>
-                </div>
               </div>
             </section>
-
-            <section className="rounded-[32px] border border-[#e1eadb] bg-[#fff9cf] p-6 shadow-[0_22px_60px_rgba(40,65,45,0.06)]">
-              <SectionHeader
-                icon={CheckCircle2}
-                eyebrow="Travel reminders"
-                title="Before you leave"
-                description="Keep these important points in mind."
-              />
-
-              <div className="mt-6 space-y-4">
-                {travelTips.map((tip) => (
-                  <div key={tip} className="flex items-start gap-3">
-                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#39734f]" />
-
-                    <p className="text-sm leading-6 text-[#56665c]">
-                      {tip}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {additionalNotes && (
-              <section className="rounded-[32px] border border-[#e1eadb] bg-white p-6 shadow-[0_22px_60px_rgba(40,65,45,0.06)]">
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-[#718078]">
-                  Your additional note
-                </p>
-
-                <p className="mt-3 leading-7 text-[#59675e]">
-                  {additionalNotes}
-                </p>
-              </section>
-            )}
           </aside>
         </div>
       </div>
@@ -485,7 +428,7 @@ function SectionHeader({
   description,
 }) {
   return (
-    <div className="flex items-start gap-4">
+    <div className="flex flex-col sm:flex-row sm:items-start gap-4">
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#edf8d9] text-[#39734f]">
         <Icon className="h-6 w-6" />
       </div>

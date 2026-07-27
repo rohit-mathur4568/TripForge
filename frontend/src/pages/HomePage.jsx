@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import { getObfuscatedRoute } from "../utils/routeUtils";
-import AuthModal from "../components/AuthModal";
 import ChatBot from "../components/ChatBot";
 import WhyTripForge from "../components/WhyTripForge";
 import {
@@ -33,14 +32,14 @@ const trendingDestinations = [
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const { user, logout, openAuthModal } = useAuth();
+  const { user, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [expandedFeature, setExpandedFeature] = useState(null);
 
   const handleStartPlanning = (e) => {
     e.preventDefault();
     if (!user) {
-      openAuthModal("login");
+      navigate("/login");
     } else {
       navigate(getObfuscatedRoute(user, "/create-trip"));
     }
@@ -48,7 +47,6 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen overflow-x-hidden text-[#17211a] bg-[#fbfdf9] font-sans selection:bg-[#eaff9d] selection:text-[#173d2e]">
-      <AuthModal />
 
       {/* Bright & Airy Navbar */}
       <header className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-[#e1eadb] transition-all">
@@ -84,12 +82,12 @@ export default function HomePage() {
               </div>
             ) : (
               <div className="flex items-center gap-4 border-l border-slate-200 pl-6">
-                <button onClick={() => openAuthModal("login")} className="hover:text-[#173d2e] cursor-pointer transition">
+                <Link to="/login" className="hover:text-[#173d2e] cursor-pointer transition">
                   Sign In
-                </button>
-                <button onClick={() => openAuthModal("signup")} className="flex items-center gap-2 rounded-full bg-[#173d2e] px-5 py-2.5 text-xs font-black text-white shadow-md hover:bg-[#20533f] hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 cursor-pointer">
+                </Link>
+                <Link to="/register" className="flex items-center gap-2 rounded-full bg-[#173d2e] px-5 py-2.5 text-xs font-black text-white shadow-md hover:bg-[#20533f] hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 cursor-pointer">
                   <LogIn className="w-3.5 h-3.5 text-[#eaff9d]" /> Start Free
-                </button>
+                </Link>
               </div>
             )}
           </div>
@@ -102,21 +100,23 @@ export default function HomePage() {
         </nav>
 
         {isMobileMenuOpen && (
-          <div className="absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl border-b border-[#e1eadb] py-5 px-5 flex flex-col gap-5 text-sm font-bold text-[#173d2e] z-50 shadow-2xl">
-            <a onClick={() => setIsMobileMenuOpen(false)} href="#features">Platform</a>
-            <a onClick={() => setIsMobileMenuOpen(false)} href="#destinations">Destinations</a>
+          <div className="absolute top-full left-0 w-full h-[calc(100vh-73px)] bg-white/95 backdrop-blur-xl border-b border-[#e1eadb] py-8 px-5 flex flex-col gap-6 text-base font-bold text-[#173d2e] z-50 shadow-2xl">
+            <a onClick={() => setIsMobileMenuOpen(false)} href="#features" className="py-2 border-b border-slate-100">Platform</a>
+            <a onClick={() => setIsMobileMenuOpen(false)} href="#destinations" className="py-2 border-b border-slate-100">Destinations</a>
             {user && (
-               <Link onClick={() => setIsMobileMenuOpen(false)} to={getObfuscatedRoute(user, "/history")}>My Dashboard</Link>
+               <Link onClick={() => setIsMobileMenuOpen(false)} to={getObfuscatedRoute(user, "/history")} className="py-2 border-b border-slate-100">My Dashboard</Link>
             )}
-            {!user ? (
-               <button onClick={() => { setIsMobileMenuOpen(false); openAuthModal("signup"); }} className="mt-2 w-full rounded-full bg-[#173d2e] px-5 py-3 text-center text-xs font-black text-white">
-                 Start Free
-               </button>
-            ) : (
-               <button onClick={() => { setIsMobileMenuOpen(false); logout(); }} className="mt-2 w-full rounded-full bg-red-50 text-red-600 px-5 py-3 text-center text-xs font-black border border-red-100">
-                 Log Out
-               </button>
-            )}
+            <div className="mt-auto pb-10">
+               {!user ? (
+                 <Link to="/register" onClick={() => setIsMobileMenuOpen(false)} className="w-full rounded-full bg-[#173d2e] px-5 py-4 text-center text-sm font-black text-white flex items-center justify-center">
+                   Start Free
+                 </Link>
+               ) : (
+                 <button onClick={() => { setIsMobileMenuOpen(false); logout(); }} className="w-full rounded-full bg-red-50 text-red-600 px-5 py-4 text-center text-sm font-black border border-red-100">
+                   Log Out
+                 </button>
+               )}
+            </div>
           </div>
         )}
       </header>
@@ -127,7 +127,7 @@ export default function HomePage() {
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#d9f99d] rounded-full mix-blend-multiply filter blur-[120px] opacity-20 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-emerald-200 rounded-full mix-blend-multiply filter blur-[150px] opacity-20 pointer-events-none" />
         
-        <div className="relative mx-auto max-w-7xl px-5 md:px-8 grid lg:grid-cols-2 gap-16 items-center">
+        <div className="relative mx-auto max-w-7xl px-5 md:px-8 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <div className="z-10">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-100 mb-6 text-emerald-800 shadow-sm">
               <Sparkles className="w-4 h-4 text-emerald-600" />
@@ -142,16 +142,39 @@ export default function HomePage() {
               Create hyper-personalized, budget-optimized global journeys in seconds using our advanced multi-agent AI engine.
             </p>
             
-            <div className="flex flex-wrap items-center gap-5">
-              <button 
-                onClick={handleStartPlanning}
-                className="group flex items-center gap-3 bg-[#173d2e] text-white px-8 py-4 rounded-full font-black text-lg shadow-[0_15px_30px_rgba(23,61,46,0.15)] hover:shadow-[0_20px_40px_rgba(23,61,46,0.25)] hover:-translate-y-1 transition-all duration-300"
-              >
-                {user ? "Enter Dashboard" : "Start Planning"}
-                <div className="w-8 h-8 rounded-full bg-[#eaff9d] text-[#173d2e] flex items-center justify-center transition-transform group-hover:scale-110">
-                   <ArrowRight className="w-4 h-4" />
-                </div>
-              </button>
+            {/* Omni-Search Form (MakeMyTrip / Booking.com style) */}
+            <div className="mt-8 bg-white/90 backdrop-blur-xl p-3 sm:p-4 rounded-[32px] sm:rounded-full shadow-[0_20px_40px_rgba(23,61,46,0.12)] border border-white flex flex-col sm:flex-row items-center gap-3 max-w-3xl">
+               <div className="flex-1 w-full flex items-center gap-3 px-4 py-2 sm:border-r border-slate-200">
+                  <MapPin className="w-5 h-5 text-[#39734f]" />
+                  <div className="flex flex-col">
+                     <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Destination</span>
+                     <input type="text" placeholder="Where to?" className="bg-transparent border-none outline-none font-bold text-[#17211a] placeholder:text-slate-400 w-full" />
+                  </div>
+               </div>
+               
+               <div className="flex-1 w-full flex items-center gap-3 px-4 py-2 sm:border-r border-slate-200">
+                  <CalendarDays className="w-5 h-5 text-[#39734f]" />
+                  <div className="flex flex-col">
+                     <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Dates</span>
+                     <input type="text" placeholder="Add dates" className="bg-transparent border-none outline-none font-bold text-[#17211a] placeholder:text-slate-400 w-full" />
+                  </div>
+               </div>
+
+               <div className="flex-1 w-full flex items-center gap-3 px-4 py-2">
+                  <UserCheck className="w-5 h-5 text-[#39734f]" />
+                  <div className="flex flex-col">
+                     <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Travelers</span>
+                     <input type="text" placeholder="2 Adults" className="bg-transparent border-none outline-none font-bold text-[#17211a] placeholder:text-slate-400 w-full" />
+                  </div>
+               </div>
+
+               <button 
+                 onClick={handleStartPlanning}
+                 className="w-full sm:w-auto shrink-0 group flex items-center justify-center gap-2 bg-[#173d2e] text-[#eaff9d] px-8 py-4 sm:py-5 rounded-3xl sm:rounded-full font-black text-sm shadow-[0_10px_20px_rgba(23,61,46,0.2)] hover:bg-[#20533f] hover:shadow-[0_15px_30px_rgba(23,61,46,0.3)] transition-all duration-300"
+               >
+                 Search
+                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+               </button>
             </div>
           </div>
 

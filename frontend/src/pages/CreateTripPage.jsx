@@ -56,16 +56,16 @@ const initialFormData = {
 
 function CreateTripPage() {
   const navigate = useNavigate();
-  const { user, loading, openAuthModal } = useAuth();
+  const { user, loading } = useAuth();
 
   const [formData, setFormData] = useState(initialFormData);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (!loading && !user) {
-      openAuthModal("login");
+      navigate("/login");
     }
-  }, [loading, user, openAuthModal]);
+  }, [loading, user, navigate]);
 
   const minimumDate = useMemo(() => {
     return new Date().toISOString().split("T")[0];
@@ -143,7 +143,7 @@ function CreateTripPage() {
     event.preventDefault();
 
     if (!user) {
-      openAuthModal("login");
+      navigate("/login");
       return;
     }
 
@@ -172,7 +172,6 @@ function CreateTripPage() {
 
   return (
     <main className="min-h-screen px-5 py-7 text-[#17211a] md:px-8 md:py-10 bg-[#fbfdf9]">
-      <AuthModal />
 
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -195,7 +194,7 @@ function CreateTripPage() {
           </div>
         </div>
 
-        <div className="mt-7 grid items-start gap-7 lg:grid-cols-[0.7fr_1.3fr]">
+        <div className="mt-7 grid items-start gap-8 lg:gap-7 lg:grid-cols-[0.7fr_1.3fr]">
           <aside className="relative overflow-hidden rounded-[32px] bg-[#173d2e] p-7 text-white shadow-[0_25px_70px_rgba(40,65,45,0.15)] md:p-9 lg:sticky lg:top-7">
             <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[#eaff9d]/15 blur-2xl" />
             <div className="absolute -bottom-20 -left-16 h-56 w-56 rounded-full bg-[#f8df58]/10 blur-3xl" />
@@ -572,7 +571,7 @@ function FormSection({
 }) {
   return (
     <section className="border-b border-[#e5ece0] py-8 first:pt-0 last:border-b-0">
-      <div className="mb-6 flex items-start gap-4">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-start gap-4">
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#edf8d9] text-[#39734f]">
           <Icon className="h-6 w-6" />
         </div>

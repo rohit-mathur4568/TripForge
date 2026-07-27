@@ -1,11 +1,23 @@
-import React from "react";
-import { Navigate, useNavigate } from "react-router";
+import React, { useEffect } from "react";
+import { Navigate, useNavigate, useLocation } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import { LogOut, UserRound } from "lucide-react";
 
 export default function ProtectedRoute({ children }) {
-  const { user, loading, openAuthModal, logout } = useAuth();
+  const { user, loading, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      const currentPath = encodeURIComponent(
+        location.pathname + location.search
+      );
+      navigate(`/login?redirect=${currentPath}`, {
+        replace: true,
+      });
+    }
+  }, [loading, user, location, navigate]);
 
   if (loading) {
     return (
@@ -16,9 +28,6 @@ export default function ProtectedRoute({ children }) {
   }
 
   if (!user) {
-    setTimeout(() => {
-        openAuthModal("login");
-    }, 100);
     return <Navigate to="/" replace />;
   }
 
