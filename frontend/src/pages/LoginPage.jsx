@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router";
+import { useAuth } from "../context/AuthContext";
 import {
   ArrowRight,
   CircleAlert,
@@ -24,6 +25,7 @@ const travelImages = [
 
 function LoginPage() {
   const navigate = useNavigate();
+  const { login, user } = useAuth();
 
   const [email, setEmail] = useState("rohit@tripforge.com");
   const [password, setPassword] = useState("TripForge@123");
@@ -32,15 +34,14 @@ function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bgImage, setBgImage] = useState(travelImages[0]);
 
-  const accessToken = localStorage.getItem("tripforge_access_token");
-
   // On mount, select a random image
   useState(() => {
     const randomIndex = Math.floor(Math.random() * travelImages.length);
     setBgImage(travelImages[randomIndex]);
   }, []);
 
-  if (accessToken) {
+  if (user) {
+    if (user.isAdmin) return <Navigate to="/admin" replace />;
     return <Navigate to="/" replace />;
   }
 
@@ -74,19 +75,15 @@ function LoginPage() {
         );
       }
 
-      localStorage.setItem(
-        "tripforge_access_token",
-        responseData.accessToken
-      );
+      // Use Context
+      login(responseData.user, responseData.accessToken);
 
-      localStorage.setItem(
-        "tripforge_user",
-        JSON.stringify(responseData.user)
-      );
+      if (responseData.user.email === "admin@tripforge.com") {
+        navigate("/admin", { replace: true });
+      } else {
+        navigate("/", { replace: true });
+      }
 
-      navigate("/", {
-        replace: true,
-      });
     } catch (error) {
       setErrorMessage(error.message);
     } finally {

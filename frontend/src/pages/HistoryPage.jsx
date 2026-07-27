@@ -111,147 +111,142 @@ function HistoryPage() {
   }, [trips]);
 
   return (
-    <main className="min-h-screen px-5 py-8 text-[#17211a] md:px-8 md:py-10 bg-[#fbfdf9]">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 text-sm font-bold text-[#526459] transition hover:text-[#173d2e]"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to home
-          </Link>
-
+    <div className="space-y-7 pb-10">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+             <h1 className="text-2xl font-black text-[#173d2e]">
+               Dashboard Overview
+             </h1>
+             <p className="text-[#708078] mt-1 text-sm font-bold">
+               Welcome back, {user?.name || "Traveller"} 👋
+             </p>
+          </div>
           <Link
             to={getObfuscatedRoute(user, "/create-trip")}
-            className="rounded-full bg-[#173d2e] px-6 py-3 text-sm font-extrabold text-white transition hover:bg-[#20533f]"
+            className="rounded-lg bg-[#173d2e] px-5 py-2.5 text-sm font-black text-white transition hover:bg-[#20533f] shadow-md"
           >
             Plan new journey
           </Link>
         </div>
 
-        <section className="mt-7 rounded-[34px] bg-[#173d2e] px-7 py-9 text-white shadow-[0_30px_80px_rgba(40,65,45,0.15)] md:px-10 flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex-1">
-             <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#eaff9d]">
-               User Dashboard
-             </p>
-             <h1 className="mt-3 text-4xl font-black md:text-5xl">
-               Welcome to your Analytics.
-             </h1>
-             <p className="mt-4 max-w-2xl leading-7 text-[#d8e3da]">
-               Track your travel history, total expenditure, and AI-curated saved journeys.
-             </p>
-          </div>
-
-          {analyticsData && (
-             <div className="w-full md:w-auto grid grid-cols-2 gap-4 shrink-0">
-                <div className="bg-white/10 border border-white/20 p-5 rounded-3xl backdrop-blur-md">
-                   <div className="text-xs font-bold uppercase text-[#c9d9cd]">Total Trips</div>
-                   <div className="text-3xl font-black text-[#eaff9d] mt-2">{trips.length}</div>
-                </div>
-                <div className="bg-white/10 border border-white/20 p-5 rounded-3xl backdrop-blur-md">
-                   <div className="text-xs font-bold uppercase text-[#c9d9cd]">Total Budget</div>
-                   <div className="text-2xl font-black text-[#eaff9d] mt-2">{formatCurrency(analyticsData.totalBudget)}</div>
-                </div>
-             </div>
-          )}
-        </section>
-
         {analyticsData && (
-           <section className="mt-7 bg-white rounded-[32px] p-8 border border-[#e1eadb] shadow-[0_20px_55px_rgba(40,65,45,0.05)]">
-              <div className="flex items-center gap-3 mb-6">
-                 <div className="w-10 h-10 bg-[#edf8d9] text-[#173d2e] rounded-xl flex items-center justify-center">
-                    <PieChartIcon className="w-5 h-5" />
-                 </div>
+           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+              <div className="bg-white rounded-2xl p-5 border border-[#e2eadc] shadow-sm flex items-start justify-between">
                  <div>
-                    <h2 className="text-xl font-black">Expenditure Overview</h2>
-                    <p className="text-sm text-[#708078]">Average budget distribution across all your trips.</p>
+                    <p className="text-xs font-bold text-[#708078] uppercase tracking-wider">Total Trips</p>
+                    <p className="text-2xl font-black text-[#173d2e] mt-1">{trips.length}</p>
+                 </div>
+                 <div className="w-10 h-10 rounded-xl bg-[#edf8d9] text-[#39734f] flex items-center justify-center">
+                    <MapPin className="w-5 h-5" />
                  </div>
               </div>
-              <div className="h-[300px] w-full">
-                 <ResponsiveContainer width="100%" height="100%">
-                   <PieChart>
-                     <Pie
-                       data={analyticsData.chartData}
-                       cx="50%"
-                       cy="50%"
-                       innerRadius={80}
-                       outerRadius={120}
-                       paddingAngle={5}
-                       dataKey="value"
-                     >
-                       {analyticsData.chartData.map((entry, index) => (
-                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                       ))}
-                     </Pie>
-                     <Tooltip 
-                        formatter={(value) => formatCurrency(value)}
-                        contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
-                     />
-                     <Legend verticalAlign="bottom" height={36}/>
-                   </PieChart>
-                 </ResponsiveContainer>
+              <div className="bg-white rounded-2xl p-5 border border-[#e2eadc] shadow-sm flex items-start justify-between">
+                 <div>
+                    <p className="text-xs font-bold text-[#708078] uppercase tracking-wider">Total Budget</p>
+                    <p className="text-2xl font-black text-[#173d2e] mt-1">{formatCurrency(analyticsData.totalBudget)}</p>
+                 </div>
+                 <div className="w-10 h-10 rounded-xl bg-[#fff9cf] text-[#8a7213] flex items-center justify-center">
+                    <CircleDollarSign className="w-5 h-5" />
+                 </div>
               </div>
-           </section>
+              <div className="bg-white rounded-2xl p-5 border border-[#e2eadc] shadow-sm flex items-start justify-between">
+                 <div>
+                    <p className="text-xs font-bold text-[#708078] uppercase tracking-wider">Total Travellers</p>
+                    <p className="text-2xl font-black text-[#173d2e] mt-1">{trips.reduce((acc, trip) => acc + (trip.summary?.travellers || 0), 0)}</p>
+                 </div>
+                 <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                    <Users className="w-5 h-5" />
+                 </div>
+              </div>
+              <div className="bg-white rounded-2xl p-5 border border-[#e2eadc] shadow-sm flex items-start justify-between">
+                 <div>
+                    <p className="text-xs font-bold text-[#708078] uppercase tracking-wider">Total Days</p>
+                    <p className="text-2xl font-black text-[#173d2e] mt-1">{trips.reduce((acc, trip) => acc + (trip.summary?.duration || 0), 0)}</p>
+                 </div>
+                 <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+                    <CalendarDays className="w-5 h-5" />
+                 </div>
+              </div>
+           </div>
         )}
 
-        {errorMessage && (
-          <div className="mt-7 rounded-2xl border border-red-200 bg-red-50 p-5 text-red-800">
-            <p className="font-bold">{errorMessage}</p>
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-7">
+           {/* Chart Section */}
+           {analyticsData && (
+              <div className="xl:col-span-1 bg-white rounded-2xl p-6 border border-[#e2eadc] shadow-sm flex flex-col">
+                 <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-base font-black text-[#173d2e]">Expenditure Breakdown</h2>
+                    <PieChartIcon className="w-5 h-5 text-[#708078]" />
+                 </div>
+                 <div className="flex-1 min-h-[250px] w-full relative">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={analyticsData.chartData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          outerRadius={80}
+                          paddingAngle={5}
+                          dataKey="value"
+                        >
+                          {analyticsData.chartData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip 
+                           formatter={(value) => formatCurrency(value)}
+                           contentStyle={{ borderRadius: '12px', border: '1px solid #e2eadc', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}
+                        />
+                        <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: '12px', fontWeight: 'bold' }}/>
+                      </PieChart>
+                    </ResponsiveContainer>
+                 </div>
+              </div>
+           )}
 
-            <button
-              type="button"
-              onClick={loadTrips}
-              className="mt-3 rounded-full bg-red-700 px-5 py-2.5 text-sm font-bold text-white"
-            >
-              Try again
-            </button>
-          </div>
-        )}
+           {/* Trips Section */}
+           <div className={`bg-white rounded-2xl p-6 border border-[#e2eadc] shadow-sm ${analyticsData ? 'xl:col-span-2' : 'xl:col-span-3'}`}>
+              <div className="flex items-center justify-between mb-6">
+                 <h2 className="text-base font-black text-[#173d2e]">Recent Journeys</h2>
+                 <Link to="#" className="text-sm font-bold text-[#39734f] hover:underline">View All</Link>
+              </div>
 
-        {isLoading ? (
-          <div className="flex min-h-[320px] items-center justify-center">
-            <div className="text-center">
-              <LoaderCircle className="mx-auto h-9 w-9 animate-spin text-[#39734f]" />
-              <p className="mt-4 font-bold text-[#617068]">
-                Loading your dashboard...
-              </p>
-            </div>
-          </div>
-        ) : trips.length === 0 ? (
-          <section className="mt-7 rounded-[32px] border border-dashed border-[#cbdac1] bg-white/80 p-12 text-center">
-            <MapPin className="mx-auto h-12 w-12 text-[#78a083]" />
+              {errorMessage && (
+                <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-red-800 text-sm font-bold flex justify-between items-center">
+                  <p>{errorMessage}</p>
+                  <button onClick={loadTrips} className="bg-white text-red-700 px-3 py-1 rounded-lg border border-red-200">Retry</button>
+                </div>
+              )}
 
-            <h2 className="mt-5 text-2xl font-black">
-              No saved journeys yet
-            </h2>
-
-            <p className="mx-auto mt-3 max-w-xl leading-7 text-[#6b776e]">
-              Create your first travel plan and save it for future reference.
-            </p>
-
-            <Link
-              to={getObfuscatedRoute(user, "/create-trip")}
-              className="mt-6 inline-flex rounded-full bg-[#173d2e] px-6 py-3 font-extrabold text-white"
-            >
-              Create a journey
-            </Link>
-          </section>
-        ) : (
-          <section className="mt-7 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {trips.map((trip) => (
-              <TripCard
-                key={trip.tripId}
-                trip={trip}
-                isDeleting={deletingTripId === trip.tripId}
-                onDelete={() => handleDeleteTrip(trip.tripId)}
-                onView={() => handleViewTrip(trip)}
-              />
-            ))}
-          </section>
-        )}
-      </div>
-    </main>
+              {isLoading ? (
+                <div className="flex min-h-[200px] items-center justify-center">
+                  <LoaderCircle className="h-8 w-8 animate-spin text-[#39734f]" />
+                </div>
+              ) : trips.length === 0 ? (
+                <div className="rounded-xl border border-dashed border-[#cbdac1] bg-[#fbfdf9] p-10 text-center">
+                  <MapPin className="mx-auto h-10 w-10 text-[#78a083]" />
+                  <h3 className="mt-4 text-lg font-black text-[#173d2e]">No saved journeys yet</h3>
+                  <p className="mx-auto mt-2 text-sm text-[#708078] max-w-sm">
+                    Create your first travel plan and it will appear here.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid gap-5 sm:grid-cols-2">
+                  {trips.slice(0, 4).map((trip) => (
+                    <TripCard
+                      key={trip.tripId}
+                      trip={trip}
+                      isDeleting={deletingTripId === trip.tripId}
+                      onDelete={() => handleDeleteTrip(trip.tripId)}
+                      onView={() => handleViewTrip(trip)}
+                    />
+                  ))}
+                </div>
+              )}
+           </div>
+        </div>
+    </div>
   );
 }
 

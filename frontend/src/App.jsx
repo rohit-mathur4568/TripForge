@@ -9,20 +9,33 @@ import HistoryPage from "./pages/HistoryPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
+import DashboardLayout from "./layouts/DashboardLayout";
 
 function App() {
   const location = useLocation();
+  // Hide footer on auth pages and dashboard routes
   const hideFooterRoutes = ["/login", "/register", "/admin"];
-  const shouldHideFooter = hideFooterRoutes.includes(location.pathname);
+  const isDashboardRoute = location.pathname.includes("/history") || location.pathname.includes("/admin");
+  const shouldHideFooter = hideFooterRoutes.includes(location.pathname) || isDashboardRoute;
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className={`flex flex-col min-h-screen ${isDashboardRoute ? "bg-[#f4f7f6]" : ""}`}>
       <div className="flex-1">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/admin" element={<AdminDashboardPage />} />
+          
+          <Route 
+            path="/admin" 
+            element={
+              <ProtectedRoute adminOnly={true}>
+                <DashboardLayout>
+                  <AdminDashboardPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } 
+          />
           
           <Route 
             path="/app/:sessionId/create-trip" 
@@ -38,7 +51,13 @@ function App() {
           />
           <Route 
             path="/app/:sessionId/history" 
-            element={<ProtectedRoute><HistoryPage /></ProtectedRoute>} 
+            element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <HistoryPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } 
           />
 
           <Route path="*" element={<Navigate to="/" replace />} />

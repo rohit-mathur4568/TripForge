@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router";
+import { useAuth } from "../context/AuthContext";
 import {
   ArrowRight,
   CircleAlert,
@@ -14,8 +15,17 @@ import {
 
 const API_BASE_URL = "http://127.0.0.1:8000";
 
+const travelImages = [
+  "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=800&q=80", // Paris
+  "https://images.unsplash.com/photo-1526392060635-9d6019884377?auto=format&fit=crop&w=800&q=80", // Machu Picchu
+  "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=800&q=80", // Bali
+  "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=800&q=80", // Rome
+  "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=800&q=80"  // Alps
+];
+
 function RegisterPage() {
   const navigate = useNavigate();
+  const { login, user } = useAuth();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -28,10 +38,16 @@ function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [bgImage, setBgImage] = useState(travelImages[1]);
 
-  const accessToken = localStorage.getItem("tripforge_access_token");
+  // On mount, select a random image
+  useState(() => {
+    const randomIndex = Math.floor(Math.random() * travelImages.length);
+    setBgImage(travelImages[randomIndex]);
+  }, []);
 
-  if (accessToken) {
+  if (user) {
+    if (user.isAdmin) return <Navigate to="/admin" replace />;
     return <Navigate to="/" replace />;
   }
 
@@ -107,12 +123,14 @@ function RegisterPage() {
         throw new Error("Registration successful, but unable to sign in.");
       }
 
-      localStorage.setItem("tripforge_access_token", loginData.accessToken);
-      localStorage.setItem("tripforge_user", JSON.stringify(loginData.user));
+      // Use Context
+      login(loginData.user, loginData.accessToken);
 
-      navigate("/", {
-        replace: true,
-      });
+      if (loginData.user.email === "admin@tripforge.com") {
+        navigate("/admin", { replace: true });
+      } else {
+        navigate("/", { replace: true });
+      }
     } catch (error) {
       setErrorMessage(error.message);
     } finally {

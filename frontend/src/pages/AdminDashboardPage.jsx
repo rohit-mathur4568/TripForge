@@ -42,90 +42,72 @@ const MOCK_DESTINATIONS = [
 
 function AdminDashboardPage() {
   return (
-    <main className="min-h-screen px-5 py-8 text-[#17211a] md:px-8 md:py-10 bg-[#fbfdf9]">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 text-sm font-bold text-[#526459] transition hover:text-[#173d2e]"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to home
-          </Link>
-          <div className="text-sm font-black tracking-widest text-[#173d2e] uppercase bg-[#eaff9d] px-4 py-2 rounded-full">
-            Admin Access
+    <div className="space-y-7 pb-10">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+             <h1 className="text-2xl font-black text-[#173d2e]">
+               System Analytics
+             </h1>
+             <p className="text-[#708078] mt-1 text-sm font-bold">
+               Monitor platform usage, user growth, and popular travel destinations.
+             </p>
+          </div>
+          <div className="rounded-lg bg-[#eaff9d] text-[#173d2e] px-5 py-2.5 text-sm font-black shadow-sm flex items-center gap-2">
+            <Activity className="w-4 h-4" /> Live Data
           </div>
         </div>
 
-        <section className="mt-7 rounded-[34px] bg-[#173d2e] px-7 py-9 text-white shadow-[0_30px_80px_rgba(40,65,45,0.15)] md:px-10 flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex-1">
-             <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#eaff9d]">
-               System Analytics
-             </p>
-             <h1 className="mt-3 text-4xl font-black md:text-5xl">
-               Admin Dashboard.
-             </h1>
-             <p className="mt-4 max-w-2xl leading-7 text-[#d8e3da]">
-               Monitor platform usage, user growth, and popular travel destinations across the network. (Mock Data)
-             </p>
-          </div>
-        </section>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-7">
-          <MetricCard icon={Users} title="Total Users" value="12,450" trend="+14% this month" />
-          <MetricCard icon={MapPin} title="Trips Generated" value="34,210" trend="+22% this month" />
-          <MetricCard icon={TrendingUp} title="Active Sessions" value="842" trend="Live" />
-          <MetricCard icon={Activity} title="System Health" value="99.9%" trend="All systems nominal" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          <MetricCard icon={Users} title="Total Users" value="12,450" trend="+14% this month" trendColor="text-[#39734f]" />
+          <MetricCard icon={MapPin} title="Trips Generated" value="34,210" trend="+22% this month" trendColor="text-[#39734f]" />
+          <MetricCard icon={TrendingUp} title="Active Sessions" value="842" trend="Live" trendColor="text-blue-600" />
+          <MetricCard icon={Activity} title="System Health" value="99.9%" trend="Nominal" trendColor="text-[#78a083]" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-7 mt-7">
            {/* Bar Chart */}
-           <section className="bg-white rounded-[32px] p-8 border border-[#e1eadb] shadow-[0_20px_55px_rgba(40,65,45,0.05)]">
-              <div className="flex items-center gap-3 mb-8">
-                 <div className="w-10 h-10 bg-[#edf8d9] text-[#173d2e] rounded-xl flex items-center justify-center">
-                    <BarChart3 className="w-5 h-5" />
-                 </div>
+           <section className="bg-white rounded-2xl p-6 border border-[#e2eadc] shadow-sm flex flex-col">
+              <div className="flex items-center justify-between mb-6">
                  <div>
-                    <h2 className="text-xl font-black">User Growth</h2>
-                    <p className="text-sm text-[#708078]">Monthly active users over the last 6 months.</p>
+                    <h2 className="text-base font-black text-[#173d2e]">User Growth</h2>
+                    <p className="text-xs font-bold text-[#708078] mt-1">Monthly active users (6 months)</p>
                  </div>
+                 <BarChart3 className="w-5 h-5 text-[#708078]" />
               </div>
-              <div className="h-[300px] w-full">
+              <div className="flex-1 min-h-[250px] w-full">
                  <ResponsiveContainer width="100%" height="100%">
                    <BarChart data={MOCK_USER_GROWTH}>
                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e1eadb" />
                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#708078', fontSize: 12}} dy={10} />
                      <YAxis axisLine={false} tickLine={false} tick={{fill: '#708078', fontSize: 12}} dx={-10} />
                      <Tooltip 
-                        contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
+                        contentStyle={{ borderRadius: '12px', border: '1px solid #e2eadc', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}
                         cursor={{fill: '#f4f9ef'}}
                      />
-                     <Bar dataKey="users" fill="#173d2e" radius={[6, 6, 0, 0]} />
+                     <Bar dataKey="users" fill="#173d2e" radius={[4, 4, 0, 0]} maxBarSize={40} />
                    </BarChart>
                  </ResponsiveContainer>
               </div>
            </section>
 
            {/* Pie Chart */}
-           <section className="bg-white rounded-[32px] p-8 border border-[#e1eadb] shadow-[0_20px_55px_rgba(40,65,45,0.05)]">
-              <div className="flex items-center gap-3 mb-8">
-                 <div className="w-10 h-10 bg-[#edf8d9] text-[#173d2e] rounded-xl flex items-center justify-center">
-                    <PieChartIcon className="w-5 h-5" />
-                 </div>
+           <section className="bg-white rounded-2xl p-6 border border-[#e2eadc] shadow-sm flex flex-col">
+              <div className="flex items-center justify-between mb-6">
                  <div>
-                    <h2 className="text-xl font-black">Trending Destinations</h2>
-                    <p className="text-sm text-[#708078]">Most searched and saved trip destinations.</p>
+                    <h2 className="text-base font-black text-[#173d2e]">Trending Destinations</h2>
+                    <p className="text-xs font-bold text-[#708078] mt-1">Most searched locations</p>
                  </div>
+                 <PieChartIcon className="w-5 h-5 text-[#708078]" />
               </div>
-              <div className="h-[300px] w-full">
+              <div className="flex-1 min-h-[250px] w-full">
                  <ResponsiveContainer width="100%" height="100%">
                    <PieChart>
                      <Pie
                        data={MOCK_DESTINATIONS}
                        cx="50%"
                        cy="50%"
-                       innerRadius={80}
-                       outerRadius={120}
+                       innerRadius={60}
+                       outerRadius={80}
                        paddingAngle={5}
                        dataKey="value"
                      >
@@ -134,33 +116,32 @@ function AdminDashboardPage() {
                        ))}
                      </Pie>
                      <Tooltip 
-                        contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
+                        contentStyle={{ borderRadius: '12px', border: '1px solid #e2eadc', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}
                      />
-                     <Legend verticalAlign="bottom" height={36}/>
+                     <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: '12px', fontWeight: 'bold' }}/>
                    </PieChart>
                  </ResponsiveContainer>
               </div>
            </section>
         </div>
-      </div>
-    </main>
+    </div>
   );
 }
 
-function MetricCard({ icon: Icon, title, value, trend }) {
+function MetricCard({ icon: Icon, title, value, trend, trendColor }) {
   return (
-    <div className="bg-white rounded-[26px] p-6 border border-[#e1eadb] shadow-[0_10px_40px_rgba(40,65,45,0.04)]">
+    <div className="bg-white rounded-2xl p-5 border border-[#e2eadc] shadow-sm">
        <div className="flex justify-between items-start">
-          <div className="w-12 h-12 rounded-2xl bg-[#f4f9ef] text-[#173d2e] flex items-center justify-center">
-             <Icon className="w-6 h-6" />
+          <div className="w-10 h-10 rounded-xl bg-[#f4f9ef] text-[#173d2e] flex items-center justify-center border border-[#e2eadc]">
+             <Icon className="w-5 h-5" />
           </div>
-          <div className="bg-[#eaff9d]/30 text-[#173d2e] text-xs font-bold px-3 py-1 rounded-full">
+          <div className={`text-xs font-bold ${trendColor}`}>
              {trend}
           </div>
        </div>
-       <div className="mt-5">
-          <p className="text-sm font-bold text-[#708078]">{title}</p>
-          <p className="text-3xl font-black text-[#17211a] mt-1">{value}</p>
+       <div className="mt-4">
+          <p className="text-xs font-bold text-[#708078] uppercase tracking-wider">{title}</p>
+          <p className="text-2xl font-black text-[#173d2e] mt-1">{value}</p>
        </div>
     </div>
   );

@@ -1,59 +1,50 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { getCurrentUser, loginUser, signupUser } from "../services/tripService";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState("login"); // "login" | "signup"
 
   useEffect(() => {
-    async function loadUser() {
-      const token = localStorage.getItem("tf_token");
-      if (token) {
-        try {
-          const res = await getCurrentUser();
-          setUser(res.user);
-        } catch (err) {
-          console.warn("Invalid or expired session token", err);
-          localStorage.removeItem("tf_token");
+    // Standardize around tripforge_user and tripforge_access_token
+    const storedUser = localStorage.getItem("tripforge_user");
+    const token = localStorage.getItem("tripforge_access_token");
+
+    if (storedUser && token) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        // Identify Admin based on email
+        if (parsedUser.email === "admin@tripforge.com") {
+           parsedUser.isAdmin = true;
+        } else {
+           parsedUser.isAdmin = false;
         }
+        setUser(parsedUser);
+      } catch (err) {
+        console.error("Failed to parse user from local storage", err);
+        localStorage.removeItem("tripforge_user");
+        localStorage.removeItem("tripforge_access_token");
       }
-      setLoading(false);
     }
-    loadUser();
+    setLoading(false);
   }, []);
 
-  const login = async (email, password) => {
-    const res = await loginUser(email, password);
-    localStorage.setItem("tf_token", res.token);
-    setUser(res.user);
-    setIsAuthModalOpen(false);
-    return res;
-  };
-
-  const signup = async (fullName, email, password) => {
-    const res = await signupUser(fullName, email, password);
-    localStorage.setItem("tf_token", res.token);
-    setUser(res.user);
-    setIsAuthModalOpen(false);
-    return res;
+  const login = (userData, token) => {
+    if (userData.email === "admin@tripforge.com") {
+       userData.isAdmin = true;
+    } else {
+       userData.isAdmin = false;
+    }
+    localStorage.setItem("tripforge_user", JSON.stringify(userData));
+    localStorage.setItem("tripforge_access_token", token);
+    setUser(userData);
   };
 
   const logout = () => {
-    localStorage.removeItem("tf_token");
+    localStorage.removeItem("tripforge_user");
+    localStorage.removeItem("tripforge_access_token");
     setUser(null);
-  };
-
-  const openAuthModal = (mode = "login") => {
-    setAuthMode(mode);
-    setIsAuthModalOpen(true);
-  };
-
-  const closeAuthModal = () => {
-    setIsAuthModalOpen(false);
   };
 
   return (
@@ -62,13 +53,7 @@ export function AuthProvider({ children }) {
         user,
         loading,
         login,
-        signup,
         logout,
-        isAuthModalOpen,
-        authMode,
-        setAuthMode,
-        openAuthModal,
-        closeAuthModal,
       }}
     >
       {children}
