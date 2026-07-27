@@ -79,8 +79,40 @@ export default function AuthModal() {
 
   if (!isAuthModalOpen) return null;
 
+  const handleNameChange = (e) => {
+    const value = e.target.value;
+    setFullName(value);
+    if (value && !/^[a-zA-Z\s]{3,50}$/.test(value)) {
+      setError("Invalid input: Name should only contain letters and spaces (min 3 chars).");
+    } else {
+      if (error.includes("Name")) setError("");
+    }
+  };
+
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+    // We only show error dynamically if they've typed enough or it's clearly invalid, 
+    // but for immediate feedback as requested:
+    if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      setError("Invalid input: Please enter a valid email address.");
+    } else {
+      if (error.includes("email")) setError("");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (authMode === "signup" && !/^[a-zA-Z\s]{3,50}$/.test(fullName)) {
+      setError("Invalid input: Name should only contain letters and spaces (min 3 chars).");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("Invalid input: Please enter a valid email address.");
+      return;
+    }
+
     setError("");
     setSubmitting(true);
 
@@ -179,7 +211,7 @@ export default function AuthModal() {
                       type="text"
                       required
                       value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
+                      onChange={handleNameChange}
                       placeholder="Alex Morgan"
                       className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#fbfdf9] border border-[#dce6d5] text-[#17211a] placeholder-slate-400 focus:outline-none focus:border-[#39734f] focus:ring-2 focus:ring-[#edf8d9] transition text-sm font-medium"
                     />
@@ -197,7 +229,7 @@ export default function AuthModal() {
                     type="email"
                     required
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={handleEmailChange}
                     placeholder="explorer@tripforge.ai"
                     className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#fbfdf9] border border-[#dce6d5] text-[#17211a] placeholder-slate-400 focus:outline-none focus:border-[#39734f] focus:ring-2 focus:ring-[#edf8d9] transition text-sm font-medium"
                   />

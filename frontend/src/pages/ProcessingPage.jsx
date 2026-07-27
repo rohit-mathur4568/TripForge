@@ -4,6 +4,8 @@ import {
   useLocation,
   useNavigate,
 } from "react-router";
+import { useAuth } from "../context/AuthContext";
+import { getObfuscatedRoute } from "../utils/routeUtils";
 import {
   Check,
   CircleAlert,
@@ -41,6 +43,7 @@ const preparationSteps = [
 function ProcessingPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const tripData = location.state?.tripData;
 
@@ -78,7 +81,7 @@ function ProcessingPage() {
         setActiveStep(preparationSteps.length);
 
         navigationTimeout = window.setTimeout(() => {
-          navigate("/result", {
+          navigate(getObfuscatedRoute(user, "/result"), {
             replace: true,
             state: {
               generatedTrip,
@@ -104,7 +107,7 @@ function ProcessingPage() {
   }, [navigate, tripData]);
 
   if (!tripData) {
-    return <Navigate to="/create-trip" replace />;
+    return <Navigate to={getObfuscatedRoute(user, "/create-trip")} replace />;
   }
 
   const completedSteps = Math.min(
@@ -116,7 +119,7 @@ function ProcessingPage() {
     (completedSteps / preparationSteps.length) * 100;
 
   function tryAgain() {
-    navigate("/create-trip", {
+    navigate(getObfuscatedRoute(user, "/create-trip"), {
       replace: true,
     });
   }

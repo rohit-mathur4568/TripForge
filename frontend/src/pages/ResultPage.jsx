@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Navigate, Link, useLocation } from "react-router";
+import { useAuth } from "../context/AuthContext";
+import { getObfuscatedRoute } from "../utils/routeUtils";
 import {
   ArrowLeft,
   BedDouble,
@@ -28,6 +30,7 @@ import CalendarExport from "../components/CalendarExport";
 
 function ResultPage() {
   const location = useLocation();
+  const { user } = useAuth();
   const generatedTrip = location.state?.generatedTrip;
 
   const [isSaving, setIsSaving] = useState(false);
@@ -35,7 +38,7 @@ function ResultPage() {
   const [notification, setNotification] = useState(null);
 
   if (!generatedTrip) {
-    return <Navigate to="/create-trip" replace />;
+    return <Navigate to={getObfuscatedRoute(user, "/create-trip")} replace />;
   }
 
   const {
@@ -103,7 +106,7 @@ function ResultPage() {
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <Link
-            to="/create-trip"
+            to={getObfuscatedRoute(user, "/create-trip")}
             className="inline-flex items-center gap-2 text-sm font-bold text-[#526459] transition hover:text-[#173d2e]"
           >
             <ArrowLeft className="h-4 w-4" />

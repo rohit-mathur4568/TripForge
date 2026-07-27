@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
+import { useAuth } from "../context/AuthContext";
+import { getObfuscatedRoute } from "../utils/routeUtils";
 import {
   ArrowLeft,
   CalendarDays,
@@ -19,6 +21,7 @@ import {
 
 function HistoryPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [trips, setTrips] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
@@ -72,7 +75,7 @@ function HistoryPage() {
   }
 
   function handleViewTrip(trip) {
-    navigate("/result", {
+    navigate(getObfuscatedRoute(user, "/result"), {
       state: { generatedTrip: trip },
     });
   }
@@ -90,7 +93,7 @@ function HistoryPage() {
           </Link>
 
           <Link
-            to="/create-trip"
+            to={getObfuscatedRoute(user, "/create-trip")}
             className="rounded-full bg-[#173d2e] px-6 py-3 text-sm font-extrabold text-white transition hover:bg-[#20533f]"
           >
             Plan new journey
@@ -147,7 +150,7 @@ function HistoryPage() {
             </p>
 
             <Link
-              to="/create-trip"
+              to={getObfuscatedRoute(user, "/create-trip")}
               className="mt-6 inline-flex rounded-full bg-[#173d2e] px-6 py-3 font-extrabold text-white"
             >
               Create a journey

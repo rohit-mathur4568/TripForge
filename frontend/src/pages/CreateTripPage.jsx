@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
+import { getObfuscatedRoute } from "../utils/routeUtils";
 import AuthModal from "../components/AuthModal";
 import {
   ArrowLeft,
@@ -157,7 +158,7 @@ function CreateTripPage() {
       return;
     }
 
-    navigate("/processing", {
+    navigate(getObfuscatedRoute(user, "/processing"), {
       state: {
         tripData: {
           ...formData,
