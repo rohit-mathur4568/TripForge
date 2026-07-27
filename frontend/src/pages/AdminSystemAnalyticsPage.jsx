@@ -40,7 +40,7 @@ const MOCK_DESTINATIONS = [
   { name: "Rome, Italy", value: 200 },
 ];
 
-function AdminDashboardPage() {
+function AdminSystemAnalyticsPage() {
   return (
     <div className="space-y-7 pb-10">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -147,4 +147,4 @@ function MetricCard({ icon: Icon, title, value, trend, trendColor }) {
   );
 }
 
-export default AdminDashboardPage;
+export default AdminSystemAnalyticsPage;

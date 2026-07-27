@@ -23,7 +23,7 @@ const travelImages = [
   "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=800&q=80"  // Alps
 ];
 
-function LoginPage() {
+function UserSignInPage() {
   const navigate = useNavigate();
   const { login, user } = useAuth();
 
@@ -245,4 +245,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default UserSignInPage;

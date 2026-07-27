@@ -1,12 +1,12 @@
 import { Navigate, Route, Routes, useLocation } from "react-router";
-import RegisterPage from "./pages/RegisterPage";
-import LoginPage from "./pages/LoginPage";
-import HomePage from "./pages/HomePage";
-import CreateTripPage from "./pages/CreateTripPage";
-import ProcessingPage from "./pages/ProcessingPage";
-import ResultPage from "./pages/ResultPage";
-import HistoryPage from "./pages/HistoryPage";
-import AdminDashboardPage from "./pages/AdminDashboardPage";
+import UserSignUpPage from "./pages/UserSignUpPage";
+import UserSignInPage from "./pages/UserSignInPage";
+import LandingPage from "./pages/LandingPage";
+import TripPlannerFormPage from "./pages/TripPlannerFormPage";
+import ItineraryGeneratingPage from "./pages/ItineraryGeneratingPage";
+import GeneratedTripItineraryPage from "./pages/GeneratedTripItineraryPage";
+import UserDashboardHistoryPage from "./pages/UserDashboardHistoryPage";
+import AdminSystemAnalyticsPage from "./pages/AdminSystemAnalyticsPage";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
 import DashboardLayout from "./layouts/DashboardLayout";
@@ -22,16 +22,16 @@ function App() {
     <div className={`flex flex-col min-h-screen ${isDashboardRoute ? "bg-[#f4f7f6]" : ""}`}>
       <div className="flex-1">
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<UserSignInPage />} />
+          <Route path="/register" element={<UserSignUpPage />} />
           
           <Route 
             path="/admin" 
             element={
               <ProtectedRoute adminOnly={true}>
                 <DashboardLayout>
-                  <AdminDashboardPage />
+                  <AdminSystemAnalyticsPage />
                 </DashboardLayout>
               </ProtectedRoute>
             } 
@@ -39,22 +39,22 @@ function App() {
           
           <Route 
             path="/app/:sessionId/create-trip" 
-            element={<ProtectedRoute><CreateTripPage /></ProtectedRoute>} 
+            element={<ProtectedRoute><TripPlannerFormPage /></ProtectedRoute>} 
           />
           <Route 
             path="/app/:sessionId/processing" 
-            element={<ProtectedRoute><ProcessingPage /></ProtectedRoute>} 
+            element={<ProtectedRoute><ItineraryGeneratingPage /></ProtectedRoute>} 
           />
           <Route 
             path="/app/:sessionId/result" 
-            element={<ProtectedRoute><ResultPage /></ProtectedRoute>} 
+            element={<ProtectedRoute><GeneratedTripItineraryPage /></ProtectedRoute>} 
           />
           <Route 
             path="/app/:sessionId/history" 
             element={
               <ProtectedRoute>
                 <DashboardLayout>
-                  <HistoryPage />
+                  <UserDashboardHistoryPage />
                 </DashboardLayout>
               </ProtectedRoute>
             } 

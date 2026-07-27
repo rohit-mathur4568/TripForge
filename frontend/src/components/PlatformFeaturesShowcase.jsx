@@ -13,7 +13,7 @@ import {
   Cpu
 } from "lucide-react";
 
-export default function WhyTripForge() {
+export default function PlatformFeaturesShowcase() {
   return (
     <div id="platform" className="bg-[#fafafa] dark:bg-black border-t border-gray-200 dark:border-white/10 py-24 transition-colors duration-300 relative overflow-hidden">
       

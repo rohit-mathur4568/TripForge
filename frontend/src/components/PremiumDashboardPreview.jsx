@@ -1,7 +1,7 @@
 import React from "react";
 import { LayoutDashboard, Activity, Settings, PieChart, Users, MapPin, CalendarDays, Compass, ArrowRight, ShieldCheck, Database, Zap } from "lucide-react";
 
-export default function DashboardShowcase() {
+export default function PremiumDashboardPreview() {
   return (
     <section className="mx-auto max-w-7xl px-5 py-24 md:px-8 relative">
       <div className="text-center max-w-3xl mx-auto mb-16">

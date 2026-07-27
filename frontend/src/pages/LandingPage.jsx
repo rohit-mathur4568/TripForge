@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import { getObfuscatedRoute } from "../utils/routeUtils";
 import ChatBot from "../components/ChatBot";
+import Footer from "../components/Footer";
+import PlatformFeaturesShowcase from "../components/PlatformFeaturesShowcase";
+import PremiumDashboardPreview from "../components/PremiumDashboardPreview";
 import WhyTripForge from "../components/WhyTripForge";
 import {
   ArrowRight,
@@ -24,7 +27,7 @@ const trendingDestinations = [
   { name: "Swiss Alps", image: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=600&q=80", span: "md:col-span-1 md:row-span-1" },
 ];
 
-export default function HomePage() {
+export default function LandingPage() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -58,7 +61,7 @@ export default function HomePage() {
                  to={user.isAdmin ? "/admin" : getObfuscatedRoute(user, "/history")} 
                  className="transition hover:text-[#173d2e] dark:hover:text-teal-400"
                >
-                 Dashboard
+                 <PremiumDashboardPreview />
                </Link>
             )}
 
@@ -164,7 +167,7 @@ export default function HomePage() {
       </section>
 
       {/* Embedded Bento Box Components */}
-      <WhyTripForge />
+      <PlatformFeaturesShowcase />
 
       {/* Pristine Grid for Destinations */}
       <section id="destinations" className="py-24 bg-[#f8f8f8] dark:bg-[#050505] border-t border-gray-200 dark:border-white/10 transition-colors duration-300 relative">

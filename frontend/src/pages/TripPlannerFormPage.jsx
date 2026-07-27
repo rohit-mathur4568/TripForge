@@ -54,7 +54,7 @@ const initialFormData = {
   additionalNotes: "",
 };
 
-function CreateTripPage() {
+function TripPlannerFormPage() {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
 
@@ -618,4 +618,4 @@ function inputClassName(error) {
   }`;
 }
 
-export default CreateTripPage;
+export default TripPlannerFormPage;

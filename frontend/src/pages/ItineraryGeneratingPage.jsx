@@ -40,7 +40,7 @@ const preparationSteps = [
   },
 ];
 
-function ProcessingPage() {
+function ItineraryGeneratingPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -265,4 +265,4 @@ function ProcessingPage() {
   );
 }
 
-export default ProcessingPage;
+export default ItineraryGeneratingPage;

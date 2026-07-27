@@ -23,7 +23,7 @@ import {
 
 const COLORS = ['#2dd4bf', '#0f766e', '#115e59', '#134e4a', '#a7f3d0'];
 
-function HistoryPage() {
+function UserDashboardHistoryPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [trips, setTrips] = useState([]);
@@ -389,4 +389,4 @@ function formatDate(value) {
   }).format(new Date(value));
 }
 
-export default HistoryPage;
+export default UserDashboardHistoryPage;
