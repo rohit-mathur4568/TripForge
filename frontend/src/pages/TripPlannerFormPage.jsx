@@ -1,5 +1,8 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
+import { useAuth } from "../context/AuthContext";
+import { getObfuscatedRoute } from "../utils/routeUtils";
+import AuthModal from "../components/AuthModal";
 import {
   ArrowLeft,
   ArrowRight,
@@ -11,8 +14,8 @@ import {
   MapPin,
   Route,
   Sparkles,
-  Users,
   Utensils,
+  Lock,
 } from "lucide-react";
 
 const travelStyles = [
@@ -51,11 +54,18 @@ const initialFormData = {
   additionalNotes: "",
 };
 
-function CreateTripPage() {
+function TripPlannerFormPage() {
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
 
   const [formData, setFormData] = useState(initialFormData);
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/login");
+    }
+  }, [loading, user, navigate]);
 
   const minimumDate = useMemo(() => {
     return new Date().toISOString().split("T")[0];
@@ -132,6 +142,11 @@ function CreateTripPage() {
   function handleSubmit(event) {
     event.preventDefault();
 
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
     const validationErrors = validateForm();
 
     if (Object.keys(validationErrors).length > 0) {
@@ -143,7 +158,7 @@ function CreateTripPage() {
       return;
     }
 
-    navigate("/processing", {
+    navigate(getObfuscatedRoute(user, "/processing"), {
       state: {
         tripData: {
           ...formData,
@@ -156,7 +171,8 @@ function CreateTripPage() {
   }
 
   return (
-    <main className="min-h-screen px-5 py-7 text-[#17211a] md:px-8 md:py-10">
+    <main className="min-h-screen px-5 py-7 text-[#17211a] md:px-8 md:py-10 bg-[#fbfdf9]">
+
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <Link
@@ -167,12 +183,18 @@ function CreateTripPage() {
             Back to home
           </Link>
 
-          <div className="rounded-full border border-[#dfe8d8] bg-white px-4 py-2 text-sm font-bold text-[#46604f] shadow-sm">
-            Journey preferences
+          <div className="rounded-full border border-[#dfe8d8] bg-white px-4 py-2 text-sm font-bold text-[#46604f] shadow-sm flex items-center gap-2">
+            {!user ? (
+              <span className="text-amber-600 flex items-center gap-1">
+                <Lock className="w-3.5 h-3.5" /> Login Required to Plan
+              </span>
+            ) : (
+              <span>Authenticated Journey Preferences</span>
+            )}
           </div>
         </div>
 
-        <div className="mt-7 grid items-start gap-7 lg:grid-cols-[0.7fr_1.3fr]">
+        <div className="mt-7 grid items-start gap-8 lg:gap-7 lg:grid-cols-[0.7fr_1.3fr]">
           <aside className="relative overflow-hidden rounded-[32px] bg-[#173d2e] p-7 text-white shadow-[0_25px_70px_rgba(40,65,45,0.15)] md:p-9 lg:sticky lg:top-7">
             <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[#eaff9d]/15 blur-2xl" />
             <div className="absolute -bottom-20 -left-16 h-56 w-56 rounded-full bg-[#f8df58]/10 blur-3xl" />
@@ -405,7 +427,7 @@ function CreateTripPage() {
                           travelStyle: style,
                         }))
                       }
-                      className={`flex items-center justify-between rounded-2xl border p-4 text-left font-extrabold transition ${
+                      className={`flex items-center justify-between rounded-2xl border p-4 text-left font-extrabold transition cursor-pointer ${
                         selected
                           ? "border-[#39734f] bg-[#edf8d9] text-[#173d2e]"
                           : "border-[#dfe8d8] bg-white text-[#56665c] hover:border-[#afc4a5]"
@@ -488,7 +510,7 @@ function CreateTripPage() {
                       key={interest}
                       type="button"
                       onClick={() => handleInterestChange(interest)}
-                      className={`rounded-full border px-5 py-3 text-sm font-bold transition ${
+                      className={`rounded-full border px-5 py-3 text-sm font-bold transition cursor-pointer ${
                         selected
                           ? "border-[#173d2e] bg-[#173d2e] text-white"
                           : "border-[#dce6d5] bg-[#f8fbf5] text-[#56665c] hover:border-[#afc4a5]"
@@ -521,15 +543,15 @@ function CreateTripPage() {
                   Ready to prepare your journey?
                 </p>
                 <p className="mt-1 text-sm text-[#69776e]">
-                  Review your details before continuing.
+                  {user ? "Review your details before continuing." : "Please login/register to continue planning."}
                 </p>
               </div>
 
               <button
                 type="submit"
-                className="group flex w-full items-center justify-center gap-3 rounded-full bg-[#173d2e] px-7 py-4 font-extrabold text-white shadow-lg shadow-green-950/15 transition hover:-translate-y-0.5 hover:bg-[#20533f] sm:w-auto"
+                className="group flex w-full items-center justify-center gap-3 rounded-full bg-[#173d2e] px-7 py-4 font-extrabold text-white shadow-lg shadow-green-950/15 transition hover:-translate-y-0.5 hover:bg-[#20533f] sm:w-auto cursor-pointer"
               >
-                Prepare my journey
+                {user ? "Prepare my journey" : "Sign In & Prepare Journey"}
                 <ArrowRight className="h-5 w-5 transition group-hover:translate-x-1" />
               </button>
             </div>
@@ -549,7 +571,7 @@ function FormSection({
 }) {
   return (
     <section className="border-b border-[#e5ece0] py-8 first:pt-0 last:border-b-0">
-      <div className="mb-6 flex items-start gap-4">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-start gap-4">
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#edf8d9] text-[#39734f]">
           <Icon className="h-6 w-6" />
         </div>
@@ -596,4 +618,4 @@ function inputClassName(error) {
   }`;
 }
 
-export default CreateTripPage;
+export default TripPlannerFormPage;

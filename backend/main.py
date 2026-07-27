@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from agents.supervisor_agent import create_complete_journey
+from agents.assistant_agent import generate_chat_response
 from database.dynamodb import (
     delete_trip,
     get_trip_by_id,
@@ -15,26 +16,24 @@ from database.dynamodb import (
 from routes.auth_routes import router as auth_router
 from services.current_user import get_authenticated_user
 
-
 app = FastAPI(
-    title="TripForge Service",
-    description="Travel planning and journey management service",
-    version="1.0.0",
+    title="TripForge Professional Service",
+    description="Multi-agent travel planning and journey management service with JWT Auth & Maps",
+    version="2.0.0",
 )
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.include_router(auth_router)
+class ChatMessageRequest(BaseModel):
+    message: str = Field(min_length=1, max_length=500)
 
+app.include_router(auth_router)
 
 class TripRequest(BaseModel):
     source: str = Field(min_length=2, max_length=100)
@@ -43,14 +42,13 @@ class TripRequest(BaseModel):
     endDate: date
     adults: int = Field(ge=1, le=20)
     children: int = Field(default=0, ge=0, le=20)
-    budget: float = Field(ge=1000)
+    budget: float = Field(ge=100)
     travelStyle: str
     transportPreference: str = "Any"
     accommodationPreference: str = "Comfortable"
     foodPreference: str = "Any"
     interests: List[str] = Field(default_factory=list)
     additionalNotes: str = Field(default="", max_length=500)
-
 
 AuthenticatedUser = Annotated[
     dict[str, Any],
@@ -61,10 +59,10 @@ AuthenticatedUser = Annotated[
 @app.get("/")
 def root():
     return {
-        "message": "TripForge service is running successfully",
+        "message": "TripForge AI Service is running successfully",
         "status": "success",
+        "version": "2.0.0"
     }
-
 
 @app.get("/health")
 def health_check():
@@ -73,7 +71,12 @@ def health_check():
         "status": "healthy",
     }
 
+# Chatbot Assistant Endpoint
+@app.post("/chat")
+def chat_with_assistant(req: ChatMessageRequest):
+    return generate_chat_response(req.message)
 
+# Trip Endpoints
 @app.post("/trips/generate")
 def generate_trip(
     trip: TripRequest,
@@ -128,13 +131,11 @@ def save_generated_trip(
             "status": "success",
             **result,
         }
-
-    except RuntimeError as error:
+    except Exception as error:
         raise HTTPException(
             status_code=500,
             detail=str(error),
         ) from error
-
 
 @app.get("/trips")
 def get_saved_trips(
@@ -160,12 +161,11 @@ def get_saved_trips(
             "trips": trips,
         }
 
-    except RuntimeError as error:
+    except Exception as error:
         raise HTTPException(
             status_code=500,
             detail=str(error),
         ) from error
-
 
 @app.get("/trips/{trip_id}")
 def get_saved_trip(
@@ -189,12 +189,11 @@ def get_saved_trip(
             "trip": trip,
         }
 
-    except RuntimeError as error:
+    except Exception as error:
         raise HTTPException(
             status_code=500,
             detail=str(error),
         ) from error
-
 
 @app.delete("/trips/{trip_id}")
 def remove_saved_trip(
@@ -219,7 +218,7 @@ def remove_saved_trip(
             "tripId": trip_id,
         }
 
-    except RuntimeError as error:
+    except Exception as error:
         raise HTTPException(
             status_code=500,
             detail=str(error),
