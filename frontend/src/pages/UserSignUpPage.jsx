@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, Navigate, useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
+import { getObfuscatedRoute } from "../utils/routeUtils";
 import {
   ArrowRight,
   CircleAlert,
@@ -41,14 +42,14 @@ function UserSignUpPage() {
   const [bgImage, setBgImage] = useState(travelImages[1]);
 
   // On mount, select a random image
-  useState(() => {
+  useEffect(() => {
     const randomIndex = Math.floor(Math.random() * travelImages.length);
     setBgImage(travelImages[randomIndex]);
   }, []);
 
   if (user) {
     if (user.isAdmin) return <Navigate to="/admin" replace />;
-    return <Navigate to="/" replace />;
+    return <Navigate to={getObfuscatedRoute(user, "/history")} replace />;
   }
 
   function handleInputChange(event) {
@@ -129,7 +130,7 @@ function UserSignUpPage() {
       if (loginData.user.email === "admin@tripforge.com") {
         navigate("/admin", { replace: true });
       } else {
-        navigate("/", { replace: true });
+        navigate(getObfuscatedRoute(loginData.user, "/history"), { replace: true });
       }
     } catch (error) {
       setErrorMessage(error.message);
@@ -176,6 +177,14 @@ function UserSignUpPage() {
         </div>
 
         <div className="p-6 md:p-8 flex flex-col justify-center">
+          {/* Mobile Header Brand Display */}
+          <div className="flex items-center gap-2 mb-3 md:hidden">
+            <div className="w-8 h-8 rounded-lg bg-[#173d2e] dark:bg-teal-500 text-white flex items-center justify-center font-black text-sm">
+              <Globe2 className="w-4 h-4" />
+            </div>
+            <span className="font-black text-lg text-[#173d2e] dark:text-white">TripForge</span>
+          </div>
+
           <p className="text-[10px] font-black uppercase tracking-[0.18em] text-gray-500 dark:text-teal-400">
             Create account
           </p>

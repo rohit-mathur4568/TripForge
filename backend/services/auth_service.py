@@ -3,11 +3,11 @@ import re
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
-import bcrypt
 import jwt
 from dotenv import load_dotenv
 
-from database.users import create_user, get_user_by_email
+from database.db_store import get_user_by_email
+from database.db_store import create_user as _create_user_db
 
 load_dotenv()
 
@@ -92,28 +92,28 @@ def register_user(
     email: str,
     password: str,
 ) -> dict[str, Any]:
+    import uuid
+
     clean_name = normalise_name(name)
     normalised_email = email.strip().lower()
 
     validate_password(password)
 
-    hashed_password = bcrypt.hashpw(
-        password.encode("utf-8"),
-        bcrypt.gensalt(),
-    ).decode("utf-8")
+    if get_user_by_email(normalised_email):
+        raise ValueError("An account with this email already exists.")
 
-    created_user = create_user(
-        {
-            "name": clean_name,
-            "email": normalised_email,
-            "passwordHash": hashed_password,
-        }
+    user_id = str(uuid.uuid4())
+    created_user = _create_user_db(
+        user_id=user_id,
+        email=normalised_email,
+        password=password,
+        full_name=clean_name,
     )
 
     return {
-        "name": created_user["name"],
+        "name": created_user["full_name"],
         "email": created_user["email"],
-        "createdAt": created_user["createdAt"],
+        "createdAt": datetime.now(timezone.utc).isoformat(),
     }
 
 
@@ -121,6 +121,8 @@ def authenticate_user(
     email: str,
     password: str,
 ) -> dict[str, Any]:
+    import hashlib
+
     normalised_email = email.strip().lower()
 
     if not password:
@@ -131,18 +133,15 @@ def authenticate_user(
     if not user:
         raise ValueError("Invalid email or password.")
 
-    password_matches = bcrypt.checkpw(
-        password.encode("utf-8"),
-        user["passwordHash"].encode("utf-8"),
-    )
-
-    if not password_matches:
+    # db_store uses sha256 hashing
+    pwd_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
+    if user["password_hash"] != pwd_hash:
         raise ValueError("Invalid email or password.")
 
     token = create_access_token(
         {
             "email": user["email"],
-            "name": user["name"],
+            "name": user["full_name"],
         }
     )
 
@@ -150,7 +149,7 @@ def authenticate_user(
         "accessToken": token,
         "tokenType": "bearer",
         "user": {
-            "name": user["name"],
+            "name": user["full_name"],
             "email": user["email"],
         },
     }

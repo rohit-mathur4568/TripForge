@@ -174,19 +174,19 @@ export default function ChatBot() {
               e.preventDefault();
               sendMessage();
             }}
-            className="p-3 border-t border-[#e1eadb] bg-white flex items-center gap-2"
+            className="p-3 border-t border-[#e1eadb] dark:border-white/10 bg-white dark:bg-[#121417] flex items-center gap-2"
           >
             <input
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               placeholder="Ask about TripForge features..."
-              className="flex-1 px-3.5 py-2.5 text-xs sm:text-sm rounded-xl bg-[#fbfdf9] border border-[#dce6d5] focus:outline-none focus:border-[#39734f] text-[#17211a]"
+              className="flex-1 px-3.5 py-2.5 text-xs sm:text-sm rounded-xl bg-[#fbfdf9] dark:bg-[#1a1d21] border border-[#dce6d5] dark:border-white/10 focus:outline-none focus:border-[#39734f] text-[#17211a] dark:text-white"
             />
             <button
               type="submit"
               disabled={!inputValue.trim() || loading}
-              className="p-2.5 rounded-xl bg-[#173d2e] text-[#eaff9d] hover:bg-[#20533f] transition disabled:opacity-50 cursor-pointer"
+              className="p-2.5 rounded-xl bg-[#173d2e] dark:bg-teal-500 text-[#eaff9d] dark:text-slate-950 hover:bg-[#20533f] transition disabled:opacity-50 cursor-pointer"
             >
               <Send className="w-4 h-4" />
             </button>

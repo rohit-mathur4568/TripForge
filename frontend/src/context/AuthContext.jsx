@@ -47,6 +47,14 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  const updateUser = (updatedFields) => {
+    setUser((prev) => {
+      const nextUser = { ...prev, ...updatedFields };
+      localStorage.setItem("tripforge_user", JSON.stringify(nextUser));
+      return nextUser;
+    });
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -54,6 +62,7 @@ export function AuthProvider({ children }) {
         loading,
         login,
         logout,
+        updateUser,
       }}
     >
       {children}

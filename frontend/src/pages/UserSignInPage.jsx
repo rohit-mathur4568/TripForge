@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, Navigate, useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
+import { getObfuscatedRoute } from "../utils/routeUtils";
 import {
   ArrowRight,
   CircleAlert,
@@ -27,22 +28,23 @@ function UserSignInPage() {
   const navigate = useNavigate();
   const { login, user } = useAuth();
 
-  const [email, setEmail] = useState("rohit@tripforge.com");
-  const [password, setPassword] = useState("TripForge@123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bgImage, setBgImage] = useState(travelImages[0]);
 
   // On mount, select a random image
-  useState(() => {
+  useEffect(() => {
     const randomIndex = Math.floor(Math.random() * travelImages.length);
     setBgImage(travelImages[randomIndex]);
   }, []);
 
+
   if (user) {
     if (user.isAdmin) return <Navigate to="/admin" replace />;
-    return <Navigate to="/" replace />;
+    return <Navigate to={getObfuscatedRoute(user, "/history")} replace />;
   }
 
   async function handleSubmit(event) {
@@ -81,7 +83,7 @@ function UserSignInPage() {
       if (responseData.user.email === "admin@tripforge.com") {
         navigate("/admin", { replace: true });
       } else {
-        navigate("/", { replace: true });
+        navigate(getObfuscatedRoute(responseData.user, "/history"), { replace: true });
       }
 
     } catch (error) {
@@ -131,6 +133,14 @@ function UserSignInPage() {
         </div>
 
         <div className="p-6 md:p-10 flex flex-col justify-center">
+          {/* Mobile Header Brand Display */}
+          <div className="flex items-center gap-2 mb-4 md:hidden">
+            <div className="w-8 h-8 rounded-lg bg-[#173d2e] dark:bg-teal-500 text-white flex items-center justify-center font-black text-sm">
+              <Globe2 className="w-4 h-4" />
+            </div>
+            <span className="font-black text-lg text-[#173d2e] dark:text-white">TripForge</span>
+          </div>
+
           <p className="text-xs font-black uppercase tracking-[0.18em] text-gray-500 dark:text-teal-400">
             Secure access
           </p>

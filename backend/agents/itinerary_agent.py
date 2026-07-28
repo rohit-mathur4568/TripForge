@@ -35,10 +35,13 @@ def create_itinerary(
     ]
 
     if not selected_activities:
+        # Default smart budget-friendly sightseeing activities tailored to destination
         selected_activities = [
-            f"Explore the landmark highlights of {destination}",
-            "Discover vibrant local markets and artisan shops",
-            "Experience authentic traditional dining and architecture",
+            f"Guided walking tour of iconic landmarks and heritage spots in {destination}",
+            f"Sampling authentic local street food delicacies and fresh cafes in {destination}",
+            f"Visiting scenic panoramic viewpoints and public garden parks in {destination}",
+            f"Exploring famous local craft markets, souvenir souks & artisan bazaars",
+            f"Relaxing evening sunset stroll & cultural photo opportunities in {destination}",
         ]
 
     itinerary = []
@@ -47,26 +50,25 @@ def create_itinerary(
         landmark_index = (day_number - 1) % len(landmarks)
         current_landmark = landmarks[landmark_index]
 
-        # Waypoint coordinates for interactive map tracking
+        # Waypoint coordinates
         offset_lat = round(base_lat + (day_number * 0.012) - 0.005, 4)
         offset_lng = round(base_lng + (day_number * 0.015) - 0.006, 4)
 
         if day_number == 1:
-            title = f"Arrival & Discovery of {destination}"
+            title = f"Day 1: Arrival & Evening at {current_landmark}"
             activities = [
                 f"Travel from {source} to {destination}",
                 "Check-in to accommodation and refresh",
-                f"Evening orientation tour around {current_landmark}",
-                f"Welcome dinner sampling signature {destination} dishes"
+                f"Evening walk & orientation around {current_landmark}",
+                f"Welcome dinner sampling signature {destination} local delicacies"
             ]
 
         elif day_number == total_days:
-            title = "Final Highlights & Grand Departure"
+            title = f"Day {day_number}: Final Exploration at {current_landmark} & Departure"
             activities = [
-                "Morning gourmet breakfast and checkout preparation",
-                f"Last-minute souvenir shopping at {current_landmark}",
-                "Panoramic photo session & farewell tea",
-                f"Begin comfortable return journey to {source}"
+                "Morning breakfast and checkout preparation",
+                f"Souvenir shopping & photo stops at {current_landmark}",
+                f"Farewell tea & departure journey back to {source}"
             ]
 
         else:
@@ -74,14 +76,64 @@ def create_itinerary(
                 (day_number - 2) % len(selected_activities)
             ]
 
-            title = f"{travel_style} Expedition: {current_landmark}"
+            title = f"Day {day_number} {travel_style} Expedition: {current_landmark}"
             activities = [
-                f"Morning visit to {current_landmark}",
+                f"Morning visit & guided exploration of {current_landmark}",
                 selected_activity,
                 f"Authentic local lunch near {current_landmark}",
-                f"Afternoon discovery walk & photo stops",
-                "Relaxing dinner and leisure evening"
+                f"Afternoon scenic walk & cultural photography",
+                "Relaxing evening dinner & local street nightlife"
             ]
+
+        # High quality imagery mapping for specific day landmarks
+        landmark_image_map = {
+            "big ben": "https://images.unsplash.com/photo-1529655683826-aba9b3e77383?auto=format&fit=crop&w=1000&q=80",
+            "tower bridge": "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1000&q=80",
+            "british museum": "https://images.unsplash.com/photo-1565008447742-97f6f38c985c?auto=format&fit=crop&w=1000&q=80",
+            "london eye": "https://images.unsplash.com/photo-1486299267070-83823f5448dd?auto=format&fit=crop&w=1000&q=80",
+            "buckingham": "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?auto=format&fit=crop&w=1000&q=80",
+            "hyde park": "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1000&q=80",
+            "camden": "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?auto=format&fit=crop&w=1000&q=80",
+            "piccadilly": "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1000&q=80",
+            
+            "eiffel": "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?auto=format&fit=crop&w=1000&q=80",
+            "louvre": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=1000&q=80",
+            "notre": "https://images.unsplash.com/photo-1478359844494-1092259d93e4?auto=format&fit=crop&w=1000&q=80",
+            "arc de triomphe": "https://images.unsplash.com/photo-1509299349698-dd22323b5963?auto=format&fit=crop&w=1000&q=80",
+            
+            "burj": "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1000&q=80",
+            "dubai mall": "https://images.unsplash.com/photo-1580674684081-7617fbf3d745?auto=format&fit=crop&w=1000&q=80",
+            "palm": "https://images.unsplash.com/photo-1526495124112-1056c40e0485?auto=format&fit=crop&w=1000&q=80",
+            
+            "ubud": "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1000&q=80",
+            "tanah": "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=1000&q=80",
+            "baga": "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=1000&q=80",
+            "aguada": "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1000&q=80",
+            "solang": "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=1000&q=80",
+            "hadimba": "https://images.unsplash.com/photo-1593181629936-11c609b8db9b?auto=format&fit=crop&w=1000&q=80",
+            "hawa": "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1000&q=80",
+            "amer": "https://images.unsplash.com/photo-1603262110263-fb0112e7cc33?auto=format&fit=crop&w=1000&q=80",
+        }
+
+        lm_key = current_landmark.lower()
+        matched_image = None
+        for key, img_url in landmark_image_map.items():
+            if key in lm_key:
+                matched_image = img_url
+                break
+
+        if not matched_image:
+            # Fallback to city default image or rotated travel photo
+            fallback_photos = [
+                "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1000&q=80",
+                "https://images.unsplash.com/photo-1529655683826-aba9b3e77383?auto=format&fit=crop&w=1000&q=80",
+                "https://images.unsplash.com/photo-1565008447742-97f6f38c985c?auto=format&fit=crop&w=1000&q=80",
+                "https://images.unsplash.com/photo-1486299267070-83823f5448dd?auto=format&fit=crop&w=1000&q=80",
+                "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1000&q=80"
+            ]
+            matched_image = loc_info.get("image") or fallback_photos[(day_number - 1) % len(fallback_photos)]
+
+        day_image = matched_image
 
         itinerary.append(
             {
@@ -91,7 +143,7 @@ def create_itinerary(
                 "locationName": current_landmark,
                 "latitude": offset_lat,
                 "longitude": offset_lng,
-                "image": loc_info.get("image")
+                "image": day_image
             }
         )
 

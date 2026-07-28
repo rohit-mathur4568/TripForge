@@ -38,8 +38,15 @@ body {
   min-height: 100vh;
   -ms-overflow-style: none;
   scrollbar-width: none;
-  background-color: var(--color-bg);
+  background-color: #fafafa;
+  color: #0a0a0a;
 }
+
+.dark body {
+  background-color: #090a0f;
+  color: #ededed;
+}
+
 
 button,
 input,

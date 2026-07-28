@@ -38,7 +38,16 @@ CITY_METADATA = {
         "lng": -0.1278,
         "image": "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1200&q=80",
         "cover": "https://images.unsplash.com/photo-1486299267070-83823f5448dd?auto=format&fit=crop&w=1600&q=80",
-        "landmarks": ["Big Ben", "Tower Bridge", "British Museum", "London Eye"],
+        "landmarks": [
+            "Big Ben & Palace of Westminster",
+            "Tower Bridge & River Thames",
+            "British Museum",
+            "London Eye & Southbank",
+            "Buckingham Palace & St James Park",
+            "Hyde Park & Kensington Gardens",
+            "Camden Market & Regent's Canal",
+            "Piccadilly Circus & West End Theatres"
+        ],
         "weather": "17°C, Mild"
     },
     "rome": {
@@ -71,15 +80,35 @@ CITY_METADATA = {
         "landmarks": ["Ubud Monkey Forest", "Tanah Lot", "Tegallalang Rice Terraces", "Uluwatu Temple"],
         "weather": "29°C, Tropical Breeze"
     },
-    "sydney": {
-        "name": "Sydney",
-        "country": "Australia",
-        "lat": -33.8688,
-        "lng": 151.2093,
-        "image": "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=1200&q=80",
-        "cover": "https://images.unsplash.com/photo-1523428096881-5bd79d04300f?auto=format&fit=crop&w=1600&q=80",
-        "landmarks": ["Sydney Opera House", "Harbour Bridge", "Bondi Beach", "Darling Harbour"],
-        "weather": "21°C, Sunny"
+    "goa": {
+        "name": "Goa",
+        "country": "India",
+        "lat": 15.2993,
+        "lng": 74.1240,
+        "image": "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=1200&q=80",
+        "cover": "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1600&q=80",
+        "landmarks": ["Baga Beach", "Calangute Beach", "Aguada Fort", "Dudhsagar Falls"],
+        "weather": "30°C, Sunny Beach"
+    },
+    "manali": {
+        "name": "Manali",
+        "country": "India",
+        "lat": 32.2432,
+        "lng": 77.1892,
+        "image": "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=1200&q=80",
+        "cover": "https://images.unsplash.com/photo-1593181629936-11c609b8db9b?auto=format&fit=crop&w=1600&q=80",
+        "landmarks": ["Solang Valley", "Rohtang Pass", "Hadimba Temple", "Old Manali Cafes"],
+        "weather": "14°C, Cool Mountain"
+    },
+    "mumbai": {
+        "name": "Mumbai",
+        "country": "India",
+        "lat": 19.0760,
+        "lng": 72.8777,
+        "image": "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1200&q=80",
+        "cover": "https://images.unsplash.com/photo-1567157577867-05ccb1388e66?auto=format&fit=crop&w=1600&q=80",
+        "landmarks": ["Gateway of India", "Marine Drive", "Juhu Beach", "Elephanta Caves"],
+        "weather": "31°C, Humid Breeze"
     },
     "delhi": {
         "name": "New Delhi",

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate, Link, useLocation } from "react-router";
+import { Navigate, Link, useLocation, useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import { getObfuscatedRoute } from "../utils/routeUtils";
 import {
@@ -42,12 +42,38 @@ function GeneratedTripItineraryPage() {
   const { user } = useAuth();
   const generatedTrip = location.state?.generatedTrip;
 
+  const navigate = useNavigate();
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [notification, setNotification] = useState(null);
 
-  if (!generatedTrip) {
-    return <Navigate to={getObfuscatedRoute(user, "/create-trip")} replace />;
+  const activeTrip = generatedTrip || (() => {
+    try {
+      const saved = localStorage.getItem("tripforge_last_generated_trip");
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  })();
+
+  if (!activeTrip) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] text-center p-6 bg-white dark:bg-[#121417] rounded-3xl border border-slate-200 dark:border-white/10 font-sans">
+        <div className="w-16 h-16 rounded-2xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center mb-4">
+          <Sparkles className="w-8 h-8" />
+        </div>
+        <h3 className="text-xl font-black text-slate-900 dark:text-white">No Itinerary Loaded</h3>
+        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 max-w-sm font-medium">Please plan a trip using the manual form or our AI Chatbot Planner to view your itinerary.</p>
+        <div className="flex items-center gap-3 mt-6">
+          <Link to={getObfuscatedRoute(user, "/chatbot-planner")} className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-bold text-xs shadow-md">
+            Launch AI Chatbot
+          </Link>
+          <Link to={getObfuscatedRoute(user, "/history")} className="px-5 py-2.5 rounded-2xl bg-slate-100 dark:bg-white/10 text-slate-800 dark:text-white font-bold text-xs">
+            Go to Dashboard
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   const {
@@ -58,7 +84,7 @@ function GeneratedTripItineraryPage() {
     recommendations,
     travelTips,
     additionalNotes,
-  } = generatedTrip;
+  } = activeTrip;
 
   const heroImage = journeyOverview?.cover || journeyOverview?.heroImage || "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1600&q=80";
 
@@ -78,8 +104,14 @@ function GeneratedTripItineraryPage() {
       showNotification(
         "success",
         "Journey saved successfully.",
-        "You can now view this journey in your saved trips."
+        "Redirecting you to your dashboard..."
       );
+
+      // Redirect to dashboard after short delay so user sees the success toast
+      window.setTimeout(() => {
+        navigate(getObfuscatedRoute(user, "/history"), { replace: true });
+      }, 1500);
+
     } catch (error) {
       showNotification(
         "error",
@@ -226,10 +258,10 @@ function GeneratedTripItineraryPage() {
         </section>
 
 
-        {/* Split Screen Layout */}
-        <div className="mt-8 grid items-start gap-8 lg:grid-cols-[1.2fr_0.8fr]">
+        {/* Main Content Layout */}
+        <div className="mt-8 space-y-8">
           
-          {/* LEFT PANE: Details, Budget, and Itinerary */}
+          {/* Details, Budget, and Itinerary */}
           <div className="space-y-8">
             
             {/* Budget Breakdown */}
@@ -350,28 +382,6 @@ function GeneratedTripItineraryPage() {
                </section>
             </div>
           </div>
-
-          {/* RIGHT PANE: Sticky Interactive Map */}
-          <aside className="lg:sticky lg:top-8 lg:h-[calc(100vh-4rem)]">
-            <section className="rounded-[24px] border border-gray-200 dark:border-white/10 dark:ring-1 dark:ring-white/5 bg-white dark:bg-[#111] p-6 shadow-sm dark:shadow-none h-full flex flex-col overflow-hidden transition-colors">
-              <div className="mb-5">
-                 <SectionHeader
-                   icon={MapIcon}
-                   eyebrow="Interactive Route Map"
-                   title="Your Map"
-                   description="Explore your day-by-day itinerary."
-                 />
-              </div>
-              <div className="flex-1 w-full relative min-h-[400px] lg:min-h-0 rounded-xl overflow-hidden shadow-inner border border-gray-200 dark:border-white/10">
-                <TripMap
-                  itinerary={itinerary}
-                  centerLat={journeyOverview?.latitude}
-                  centerLng={journeyOverview?.longitude}
-                  destinationName={summary.destination}
-                />
-              </div>
-            </section>
-          </aside>
         </div>
       </div>
     </main>

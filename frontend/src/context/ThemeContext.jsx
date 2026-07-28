@@ -8,32 +8,37 @@ export function useTheme() {
 }
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState("light");
-  const [manualTheme, setManualTheme] = useState(() => {
+  const [theme, setTheme] = useState(() => localStorage.getItem("dashboardTheme") || "light");
+  const [manualTheme, setManualThemeState] = useState(() => {
     return localStorage.getItem("dashboardTheme") || "light";
   });
   
   const location = useLocation();
 
-  useEffect(() => {
-    // Determine if we are on a dashboard route
-    const isDashboard = location.pathname.includes("/admin") || location.pathname.includes("/history");
+  const setManualTheme = (newTheme) => {
+    setManualThemeState(newTheme);
+    localStorage.setItem("dashboardTheme", newTheme);
+  };
 
-    if (isDashboard) {
-      // Use manual theme for dashboards
+  useEffect(() => {
+    const isDashboardRoute =
+      location.pathname.startsWith("/app") ||
+      location.pathname.startsWith("/admin") ||
+      location.pathname.includes("/history") ||
+      location.pathname.includes("/settings") ||
+      location.pathname.includes("/my-journeys") ||
+      location.pathname.includes("/create-trip");
+
+    if (isDashboardRoute) {
       setTheme(manualTheme);
-      localStorage.setItem("dashboardTheme", manualTheme);
     } else {
-      // Use time-based theme for Landing and Auth pages
       const currentHour = new Date().getHours();
-      // Night is from 18:00 (6 PM) to 06:00 (6 AM)
       const isNight = currentHour >= 18 || currentHour < 6;
       setTheme(isNight ? "dark" : "light");
     }
   }, [location.pathname, manualTheme]);
 
   useEffect(() => {
-    // Apply theme to the HTML element
     const root = window.document.documentElement;
     if (theme === "dark") {
       root.classList.add("dark");
@@ -43,12 +48,14 @@ export function ThemeProvider({ children }) {
   }, [theme]);
 
   const toggleManualTheme = () => {
-    setManualTheme((prev) => (prev === "light" ? "dark" : "light"));
+    const nextTheme = manualTheme === "light" ? "dark" : "light";
+    setManualTheme(nextTheme);
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleManualTheme }}>
+    <ThemeContext.Provider value={{ theme, manualTheme, setManualTheme, toggleManualTheme }}>
       {children}
     </ThemeContext.Provider>
   );
 }
+

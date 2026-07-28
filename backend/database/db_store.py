@@ -38,7 +38,22 @@ def init_db():
     conn.commit()
     conn.close()
 
+def seed_admin():
+    """Ensure the admin account always exists."""
+    conn = get_db()
+    cursor = conn.cursor()
+    admin_email = "admin@tripforge.com"
+    admin_pwd = hashlib.sha256("Admin@TripForge2026".encode("utf-8")).hexdigest()
+    now = datetime.now(timezone.utc).isoformat()
+    cursor.execute(
+        "INSERT OR IGNORE INTO users (id, email, password_hash, full_name, created_at) VALUES (?, ?, ?, ?, ?)",
+        ("admin-001", admin_email, admin_pwd, "TripForge Admin", now),
+    )
+    conn.commit()
+    conn.close()
+
 init_db()
+seed_admin()
 
 def hash_password(password: str) -> str:
     return hashlib.sha256(password.encode("utf-8")).hexdigest()
@@ -96,15 +111,32 @@ def save_trip_db(trip_data: dict, user_id: Optional[str] = None) -> dict:
     conn.commit()
     conn.close()
 
+    # AWS DynamoDB Sync - Persist to AWS DynamoDB as requested
     try:
-        from database.dynamodb import save_trip as save_dynamo
-        save_dynamo(trip_data)
-    except Exception:
-        pass
+        from database.dynamodb import table, _convert_numbers
+        converted_item = _convert_numbers(trip_data)
+        table.put_item(Item=converted_item)
+    except Exception as e:
+        print(f"[AWS DynamoDB Sync Note]: {e}")
 
     return {"message": "Journey saved successfully.", "tripId": trip_id}
 
 def get_all_trips_db(user_id: Optional[str] = None) -> List[dict]:
+    # Try loading from DynamoDB first if available
+    try:
+        from database.dynamodb import get_user_trips, table
+        if user_id:
+            dynamo_items = get_user_trips(user_id)
+            if dynamo_items:
+                return dynamo_items
+        else:
+            response = table.scan()
+            dynamo_items = response.get("Items", [])
+            if dynamo_items:
+                return dynamo_items
+    except Exception:
+        pass
+
     conn = get_db()
     cursor = conn.cursor()
     if user_id:
@@ -121,16 +153,17 @@ def get_all_trips_db(user_id: Optional[str] = None) -> List[dict]:
         except Exception:
             pass
 
-    if trips:
-        return trips
-
-    try:
-        from database.dynamodb import get_all_trips as get_dynamo
-        return get_dynamo()
-    except Exception:
-        return []
+    return trips
 
 def get_trip_by_id_db(trip_id: str) -> Optional[dict]:
+    try:
+        from database.dynamodb import table
+        res = table.get_item(Key={"tripId": trip_id})
+        if "Item" in res:
+            return res["Item"]
+    except Exception:
+        pass
+
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute("SELECT data FROM trips WHERE tripId = ?", (trip_id,))
@@ -138,12 +171,7 @@ def get_trip_by_id_db(trip_id: str) -> Optional[dict]:
     conn.close()
     if row:
         return json.loads(row["data"])
-
-    try:
-        from database.dynamodb import get_trip_by_id as get_dynamo
-        return get_dynamo(trip_id)
-    except Exception:
-        return None
+    return None
 
 def delete_trip_db(trip_id: str) -> bool:
     conn = get_db()
@@ -154,9 +182,9 @@ def delete_trip_db(trip_id: str) -> bool:
     conn.close()
 
     try:
-        from database.dynamodb import delete_trip as delete_dynamo
-        delete_dynamo(trip_id)
-    except Exception:
-        pass
+        from database.dynamodb import table
+        table.delete_item(Key={"tripId": trip_id})
+    except Exception as e:
+        print(f"[AWS DynamoDB Delete Note]: {e}")
 
     return deleted

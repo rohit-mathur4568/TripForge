@@ -7,11 +7,12 @@ from pydantic import BaseModel, Field
 
 from agents.supervisor_agent import create_complete_journey
 from agents.assistant_agent import generate_chat_response
-from database.dynamodb import (
-    delete_trip,
-    get_trip_by_id,
-    get_user_trips,
-    save_trip,
+from agents.budget_agent import create_budget_plan
+from database.db_store import (
+    delete_trip_db,
+    get_all_trips_db,
+    get_trip_by_id_db,
+    save_trip_db as save_trip,
 )
 from routes.auth_routes import router as auth_router
 from services.current_user import get_authenticated_user
@@ -71,6 +72,23 @@ def health_check():
         "status": "healthy",
     }
 
+class BudgetEvaluationRequest(BaseModel):
+    destination: str = Field(default="")
+    source: str = Field(default="")
+    budget: float = Field(default=40000.0)
+    baseCurrency: str = Field(default="INR")
+    startDate: str = Field(default="")
+    endDate: str = Field(default="")
+    adults: int = Field(default=1, ge=1)
+    children: int = Field(default=0, ge=0)
+    accommodationPreference: str = Field(default="Comfortable")
+    interests: List[str] = Field(default_factory=list)
+
+# Real-time Live Agent Endpoints
+@app.post("/agents/evaluate-budget")
+def evaluate_budget_agent(req: BudgetEvaluationRequest):
+    return create_budget_plan(req.model_dump())
+
 # Chatbot Assistant Endpoint
 @app.post("/chat")
 def chat_with_assistant(req: ChatMessageRequest):
@@ -122,9 +140,13 @@ def save_generated_trip(
         )
 
     try:
+        # Attach owner info before saving
+        trip_data["ownerEmail"] = current_user["email"]
+        trip_data["ownerName"] = current_user["name"]
+
         result = save_trip(
             trip_data=trip_data,
-            owner=current_user,
+            user_id=current_user["email"],
         )
 
         return {
@@ -142,15 +164,22 @@ def get_saved_trips(
     current_user: AuthenticatedUser,
 ):
     try:
-        trips = get_user_trips(current_user["email"])
+        is_admin = current_user["email"] == "admin@tripforge.com"
+
+        if is_admin:
+            # Admin sees all trips on the platform
+            all_trips = get_all_trips_db(user_id=None)
+            trips = all_trips
+        else:
+            # Regular users see only their own trips
+            all_trips = get_all_trips_db(user_id=current_user["email"])
+            trips = [
+                t for t in all_trips
+                if t.get("ownerEmail", "").lower() == current_user["email"].lower()
+            ]
 
         total_budget = sum(
-            int(
-                trip.get("summary", {}).get(
-                    "estimatedBudget",
-                    0,
-                )
-            )
+            int(trip.get("summary", {}).get("estimatedBudget", 0))
             for trip in trips
         )
 
@@ -173,12 +202,16 @@ def get_saved_trip(
     current_user: AuthenticatedUser,
 ):
     try:
-        trip = get_trip_by_id(
-            trip_id=trip_id,
-            owner_email=current_user["email"],
-        )
+        trip = get_trip_by_id_db(trip_id=trip_id)
 
         if not trip:
+            raise HTTPException(
+                status_code=404,
+                detail="Journey not found.",
+            )
+
+        # Ownership check
+        if trip.get("ownerEmail", "").lower() != current_user["email"].lower():
             raise HTTPException(
                 status_code=404,
                 detail="Journey not found.",
@@ -189,6 +222,8 @@ def get_saved_trip(
             "trip": trip,
         }
 
+    except HTTPException:
+        raise
     except Exception as error:
         raise HTTPException(
             status_code=500,
@@ -201,10 +236,15 @@ def remove_saved_trip(
     current_user: AuthenticatedUser,
 ):
     try:
-        deleted = delete_trip(
-            trip_id=trip_id,
-            owner_email=current_user["email"],
-        )
+        # Ownership check before delete
+        trip = get_trip_by_id_db(trip_id=trip_id)
+        if not trip or trip.get("ownerEmail", "").lower() != current_user["email"].lower():
+            raise HTTPException(
+                status_code=404,
+                detail="Journey not found.",
+            )
+
+        deleted = delete_trip_db(trip_id=trip_id)
 
         if not deleted:
             raise HTTPException(
@@ -218,6 +258,8 @@ def remove_saved_trip(
             "tripId": trip_id,
         }
 
+    except HTTPException:
+        raise
     except Exception as error:
         raise HTTPException(
             status_code=500,
